@@ -395,7 +395,7 @@ function changeLanguage(language) {
     setTexts(".restaurants-section .section-heading span", [t.restaurantTag]);
     setTexts(".restaurants-section .section-heading h2", [t.restaurantHeading]);
     setTexts(".restaurants-section .section-heading p", [t.restaurantText]);
-    setTexts(".restaurant-info h3, .restaurant-info p", t.restaurants);
+
     setTexts(".view-all a", [t.viewAll]);
 
     // Footer
@@ -449,3 +449,87 @@ try {
 }
 
 changeLanguage(savedLanguage);
+
+// LOAD RESTAURANTS FROM DJANGO BACKEND
+async function loadRestaurants() {
+
+    const restaurantGrid = document.getElementById("restaurantGrid");
+
+    if (!restaurantGrid) return;
+
+    try {
+
+        const response = await fetch(
+            "http://127.0.0.1:8000/api/restaurants/"
+        );
+
+        if (!response.ok) {
+            throw new Error("Unable to fetch restaurants.");
+        }
+
+        const data = await response.json();
+
+        restaurantGrid.innerHTML = "";
+
+        if (!data.restaurants || data.restaurants.length === 0) {
+            restaurantGrid.innerHTML =
+                "<p>No restaurants available right now.</p>";
+            return;
+        }
+
+        data.restaurants.forEach(restaurant => {
+
+            const card = document.createElement("article");
+            card.className = "restaurant-card";
+
+            const image = document.createElement("div");
+            image.className = "restaurant-image";
+
+            if (restaurant.image) {
+                const img = document.createElement("img");
+                img.src = restaurant.image;
+                img.alt = restaurant.name;
+                img.style.width = "100%";
+                img.style.height = "100%";
+                img.style.objectFit = "cover";
+                image.appendChild(img);
+            } else {
+                image.textContent = "🍽️";
+            }
+
+            const info = document.createElement("div");
+            info.className = "restaurant-info";
+
+            const name = document.createElement("h3");
+            name.textContent = restaurant.name;
+
+            const location = document.createElement("p");
+            location.textContent = restaurant.city;
+
+            const status = document.createElement("span");
+            status.textContent = restaurant.is_open
+                ? "Open"
+                : "Currently Closed";
+
+            info.appendChild(name);
+            info.appendChild(location);
+            info.appendChild(status);
+
+            card.appendChild(image);
+            card.appendChild(info);
+
+            restaurantGrid.appendChild(card);
+
+        });
+
+    } catch (error) {
+
+        console.error("Restaurant API Error:", error);
+
+        restaurantGrid.innerHTML =
+            "<p>Unable to load restaurants. Please try again later.</p>";
+
+    }
+}
+
+loadRestaurants();

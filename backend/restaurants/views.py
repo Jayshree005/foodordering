@@ -1,10 +1,11 @@
+
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 
-from .models import Restaurant
-from .serializers import RestaurantSerializer
+from .models import Restaurant, Category, FoodItem
+from .serializers import RestaurantSerializer, CategorySerializer, FoodItemSerializer
 
 
 # Create Restaurant API
@@ -75,10 +76,7 @@ def restaurant_details(request, restaurant_id):
 
     serializer = RestaurantSerializer(restaurant)
 
-    return Response(
-        serializer.data,
-        status=status.HTTP_200_OK
-    )
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 # Update Restaurant API
@@ -147,3 +145,108 @@ def delete_restaurant(request, restaurant_id):
         {"message": "Restaurant deactivated successfully."},
         status=status.HTTP_200_OK
     )
+
+
+# List Categories of a Restaurant API
+@api_view(['GET'])
+def list_categories(request, restaurant_id):
+
+    if not Restaurant.objects.filter(
+        id=restaurant_id,
+        is_active=True
+    ).exists():
+        return Response(
+            {"error": "Restaurant not found."},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    categories = Category.objects.filter(
+        restaurant_id=restaurant_id,
+        is_active=True
+    )
+
+    serializer = CategorySerializer(categories, many=True)
+
+    return Response(
+        {
+            "total_categories": categories.count(),
+            "categories": serializer.data
+        },
+        status=status.HTTP_200_OK
+    )
+
+
+# Category Details API
+@api_view(['GET'])
+def category_details(request, category_id):
+
+    try:
+        category = Category.objects.get(
+            id=category_id,
+            is_active=True,
+            restaurant__is_active=True
+        )
+
+    except Category.DoesNotExist:
+        return Response(
+            {"error": "Category not found."},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    serializer = CategorySerializer(category)
+
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+# List Food Items of a Restaurant API
+@api_view(['GET'])
+def list_food_items(request, restaurant_id):
+
+    if not Restaurant.objects.filter(
+        id=restaurant_id,
+        is_active=True
+    ).exists():
+        return Response(
+            {"error": "Restaurant not found."},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    food_items = FoodItem.objects.filter(
+        restaurant_id=restaurant_id,
+        restaurant__is_active=True,
+        is_available=True,
+        category__is_active=True
+    )
+
+    serializer = FoodItemSerializer(food_items, many=True)
+
+    return Response(
+        {
+            "total_food_items": food_items.count(),
+            "food_items": serializer.data
+        },
+        status=status.HTTP_200_OK
+    )
+
+
+# Food Item Details API
+@api_view(['GET'])
+def food_item_details(request, food_item_id):
+
+    try:
+        food_item = FoodItem.objects.get(
+            id=food_item_id,
+            is_available=True,
+            restaurant__is_active=True,
+            category__is_active=True
+        )
+
+    except FoodItem.DoesNotExist:
+        return Response(
+            {"error": "Food item not found."},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    serializer = FoodItemSerializer(food_item)
+
+    return Response(serializer.data, status=status.HTTP_200_OK)
