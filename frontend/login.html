@@ -1,0 +1,142 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Food Paradise</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .auth-wrapper {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px 15px;
+        }
+
+        .auth-card {
+            width: 100%;
+            max-width: 430px;
+            padding: 38px;
+            background: rgba(20, 17, 14, 0.78);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 22px;
+            color: white;
+        }
+
+        .auth-card h1 {
+            text-align: center;
+            color: #ffb347;
+            margin-bottom: 10px;
+        }
+
+        .auth-subtitle {
+            text-align: center;
+            color: #ddd;
+            margin-bottom: 28px;
+        }
+
+        .auth-card label {
+            display: block;
+            margin: 16px 0 8px;
+        }
+
+        .auth-card input {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 9px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        .auth-card input:focus {
+            border-color: #ffb347;
+        }
+
+        .auth-card input::placeholder {
+            color: #ccc;
+        }
+
+        .auth-button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 24px;
+            border: none;
+            border-radius: 9px;
+            background: linear-gradient(90deg, #e87924, #ffb347);
+            color: #1c1209;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .auth-bottom {
+            text-align: center;
+            margin-top: 22px;
+            color: #ddd;
+        }
+
+        .auth-bottom a {
+            color: #ffb347;
+            text-decoration: none;
+        }
+
+        .auth-message {
+            margin-top: 15px;
+            text-align: center;
+            color: #ffb347;
+        }
+
+        @media(max-width: 480px) {
+            .auth-card { padding: 26px 20px; }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="auth-wrapper">
+    <div class="auth-card">
+
+        <h1>Welcome Back!</h1>
+        <p class="auth-subtitle">Login to continue your food journey</p>
+
+        <form id="loginForm">
+
+            <label for="email">Email Address</label>
+            <input type="email" id="email" placeholder="Enter your email" required>
+
+            <label for="password">Password</label>
+            <input type="password" id="password" placeholder="Enter your password" required>
+
+            <button type="submit" class="auth-button">Login</button>
+
+            <p id="authMessage" class="auth-message"></p>
+
+        </form>
+
+        <div class="auth-bottom">
+            Don't have an account?
+            <a href="signup.html">Create Account</a>
+            <br><br>
+            <a href="index.html">← Back to Home</a>
+        </div>
+
+    </div>
+</div>
+
+<script>
+document.getElementById("loginForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    document.getElementById("authMessage").textContent =
+        "Login form ready. Backend connection will be added next.";
+});
+</script>
+
+</body>
+</html>

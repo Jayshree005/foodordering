@@ -1,0 +1,340 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SmartDine | Multi-Restaurant Food Ordering</title>
+
+    <meta name="description" content="Discover restaurants, explore international menus and enjoy a smart food ordering experience.">
+
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+
+    <div class="background-overlay"></div>
+
+    <!-- NAVBAR -->
+    <header class="navbar">
+
+        <a href="index.html" class="logo">
+            <img src="../assets/images/WhatsApp Image 2026-11-04 at 8.51.29 PM (1).jpeg"
+                 alt="SmartDine Logo">
+        </a>
+
+        <nav class="nav-links" id="navLinks">
+            <a href="index.html" class="active">Home</a>
+            <a href="#restaurants">Restaurants</a>
+            <a href="#about">About</a>
+            <a href="#contact">Contact</a>
+            <a href="#offers">Offers</a>
+        </nav>
+
+        <div class="nav-actions">
+
+            <div class="language-selector">
+                <select id="languageSelect" aria-label="Select language">
+                    <option value="en">🌐 English</option>
+                    <option value="hi">🇮🇳 Hindi</option>
+                    <option value="fr">🇫🇷 French</option>
+                    <option value="es">🇪🇸 Spanish</option>
+                    <option value="de">🇩🇪 German</option>
+                    <option value="ja">🇯🇵 Japanese</option>
+                </select>
+            </div>
+
+            <a href="login.html" class="login-btn">Login</a>
+            <a href="signup.html" class="signup-btn">Sign Up</a>
+
+        </div>
+
+        <button class="menu-toggle" id="menuToggle"
+                aria-label="Open menu"
+                aria-expanded="false">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+    </header>
+
+    <!-- MOBILE MENU -->
+    <nav class="mobile-menu" id="mobileMenu">
+
+        <a href="index.html">Home</a>
+        <a href="#restaurants">Restaurants</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+        <a href="#offers">Offers</a>
+
+        <div class="mobile-language">
+            <label for="mobileLanguageSelect">Choose Language</label>
+            <select id="mobileLanguageSelect">
+                <option value="en">English</option>
+                <option value="hi">Hindi</option>
+                <option value="fr">French</option>
+                <option value="es">Spanish</option>
+                <option value="de">German</option>
+                <option value="ja">Japanese</option>
+            </select>
+        </div>
+
+        <a href="login.html">Login</a>
+        <a href="signup.html" class="mobile-signup">Sign Up</a>
+
+    </nav>
+
+    <!-- HERO SECTION -->
+    <main class="hero-section">
+
+        <div class="hero-content">
+
+            <span class="hero-tag">
+                ✦ GLOBAL CUISINE, LOCAL LOVE
+            </span>
+
+            <h1>
+                Discover Amazing Food
+                <span>From Multiple Restaurants</span>
+            </h1>
+
+            <p>
+                Explore top restaurants, enjoy special menus for
+                international guests and order your favourite food
+                with SmartDine.
+            </p>
+
+            <div class="hero-buttons">
+
+                <a href="#restaurants" class="primary-btn">
+                    Explore Restaurants →
+                </a>
+
+                <a href="#about" class="secondary-btn">
+                    Learn More
+                </a>
+
+            </div>
+
+            <div class="hero-stats">
+
+                <div class="stat-item">
+                    <strong>Multiple</strong>
+                    <span>Restaurants</span>
+                </div>
+
+                <div class="stat-item">
+                    <strong>6 Languages</strong>
+                    <span>Multi-Lingual Support</span>
+                </div>
+
+                <div class="stat-item">
+                    <strong>Smart</strong>
+                    <span>Food Experience</span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- SPECIAL FEATURES -->
+    <section class="quick-features" id="about">
+
+        <div class="quick-feature-card">
+            <div class="quick-icon">🌍</div>
+            <div>
+                <h3>Special Menu for Foreign Guests</h3>
+                <p>Discover international cuisines</p>
+            </div>
+        </div>
+
+        <div class="quick-feature-card">
+            <div class="quick-icon">🗣️</div>
+            <div>
+                <h3>Multi-Lingual Support</h3>
+                <p>Switch between languages</p>
+            </div>
+        </div>
+
+        <div class="quick-feature-card">
+            <div class="quick-icon">🚚</div>
+            <div>
+                <h3>Live Order Tracking</h3>
+                <p>Know your order status</p>
+            </div>
+        </div>
+
+        <div class="quick-feature-card">
+            <div class="quick-icon">✨</div>
+            <div>
+                <h3>Smart Recommendations</h3>
+                <p>Find dishes you'll love</p>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- FOREIGN GUEST MENU -->
+    <section class="international-section" id="offers">
+
+        <div class="section-heading">
+            <span>FOOD WITHOUT BORDERS</span>
+            <h2>Explore International Cuisine</h2>
+            <p>Special food choices and menus for guests from around the world.</p>
+        </div>
+
+        <div class="international-grid">
+
+            <div class="international-card">
+                <div class="international-icon">🇮🇹</div>
+                <h3>Italian Cuisine</h3>
+                <p>Pizza, pasta and delicious Italian favourites.</p>
+            </div>
+
+            <div class="international-card">
+                <div class="international-icon">🇯🇵</div>
+                <h3>Japanese Cuisine</h3>
+                <p>Explore sushi, noodles and Japanese dishes.</p>
+            </div>
+
+            <div class="international-card">
+                <div class="international-icon">🇮🇳</div>
+                <h3>Indian Cuisine</h3>
+                <p>Discover traditional Indian flavours and meals.</p>
+            </div>
+
+            <div class="international-card">
+                <div class="international-icon">🇫🇷</div>
+                <h3>Continental Cuisine</h3>
+                <p>Enjoy popular continental food selections.</p>
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- POPULAR RESTAURANTS -->
+    <section class="restaurants-section" id="restaurants">
+
+        <div class="section-heading">
+            <span>EXPLORE OUR RESTAURANTS</span>
+            <h2>Popular Restaurants</h2>
+            <p>Find your favourite restaurant and discover something delicious.</p>
+        </div>
+
+        <div class="restaurant-grid">
+
+            <article class="restaurant-card">
+                <div class="restaurant-image">🍝</div>
+                <div class="restaurant-info">
+                    <h3>Italian Bistro</h3>
+                    <p>Italian · Continental</p>
+                    <span>★ 4.7</span>
+                </div>
+            </article>
+
+            <article class="restaurant-card">
+                <div class="restaurant-image">🍛</div>
+                <div class="restaurant-info">
+                    <h3>The Spice House</h3>
+                    <p>Indian · North Indian</p>
+                    <span>★ 4.8</span>
+                </div>
+            </article>
+
+            <article class="restaurant-card">
+                <div class="restaurant-image">🍣</div>
+                <div class="restaurant-info">
+                    <h3>Sushi Place</h3>
+                    <p>Japanese · Sushi</p>
+                    <span>★ 4.8</span>
+                </div>
+            </article>
+
+            <article class="restaurant-card">
+                <div class="restaurant-image">🍔</div>
+                <div class="restaurant-info">
+                    <h3>Burger Hub</h3>
+                    <p>Fast Food · Burgers</p>
+                    <span>★ 4.6</span>
+                </div>
+            </article>
+
+        </div>
+
+        <div class="view-all">
+            <a href="login.html" class="secondary-btn">View All Restaurants →</a>
+        </div>
+
+    </section>
+
+    <!-- FOOTER -->
+    <footer id="contact">
+
+        <div class="footer-container">
+
+            <div class="footer-brand">
+                <div class="footer-logo">Smart<span>Dine</span></div>
+                <p>Good Food. Good Mood.</p>
+                <p class="brand-description">
+                    Discover restaurants, explore cuisines and enjoy
+                    a smarter food ordering experience.
+                </p>
+            </div>
+
+            <div class="footer-column">
+                <h3>Quick Links</h3>
+                <a href="index.html">Home</a>
+                <a href="#restaurants">Restaurants</a>
+                <a href="#about">About Us</a>
+                <a href="#offers">Special Menus</a>
+                <a href="#contact">Contact</a>
+            </div>
+
+            <div class="footer-column">
+                <h3>Support</h3>
+                <a href="#contact">FAQ</a>
+                <a href="#contact">Help Center</a>
+                <a href="#contact">Terms & Conditions</a>
+                <a href="#contact">Privacy Policy</a>
+            </div>
+
+            <div class="footer-column contact-column">
+                <h3>Contact Us</h3>
+                <a href="mailto:support@smartdine.com">
+                    ✉ support@smartdine.com
+                </a>
+                <a href="tel:+919876543210">
+                    ☎ +91 98765 43210
+                </a>
+                <p>📍 New Delhi, India</p>
+            </div>
+
+            <div class="footer-column">
+                <h3>Follow Us</h3>
+                <div class="social-links">
+                    <a href="#" aria-label="Facebook">f</a>
+                    <a href="#" aria-label="Instagram">◎</a>
+                    <a href="#" aria-label="YouTube">▶</a>
+                    <a href="#" aria-label="LinkedIn">in</a>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="footer-bottom">
+            <p>© 2026 SmartDine. All Rights Reserved.</p>
+            <p>Made with ❤️ for Food Lovers</p>
+        </div>
+
+    </footer>
+
+    <script src="../js/app.js"></script>
+
+</body>
+</html>

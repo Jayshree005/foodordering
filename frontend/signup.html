@@ -1,0 +1,287 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up | Food Paradise</title>
+    <link rel="stylesheet" href="../css/style.css">
+
+    <style>
+        .auth-wrapper {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px 15px;
+        }
+
+        .auth-card {
+            width: 100%;
+            max-width: 480px;
+            padding: 35px;
+            background: rgba(20, 17, 14, 0.78);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 22px;
+            color: white;
+        }
+
+        .auth-card h1 {
+            text-align: center;
+            color: #ffb347;
+            margin-bottom: 8px;
+        }
+
+        .auth-subtitle {
+            text-align: center;
+            color: #ddd;
+            margin-bottom: 25px;
+        }
+
+        .auth-card label {
+            display: block;
+            margin: 13px 0 7px;
+        }
+
+        .auth-card input,
+        .auth-card select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 9px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        .auth-card input:focus,
+        .auth-card select:focus {
+            border-color: #ffb347;
+        }
+
+        .auth-card input::placeholder {
+            color: #ccc;
+        }
+
+        .auth-card select option {
+            background: #24201c;
+            color: white;
+        }
+
+        .password-rules {
+            margin-top: 9px;
+            font-size: 13px;
+        }
+
+        .rule {
+            display: none;
+            margin: 5px 0;
+        }
+
+        .invalid {
+            color: #ff5555;
+        }
+
+        .valid {
+            color: #4ade80;
+        }
+
+        .auth-message {
+            margin-top: 10px;
+            font-size: 13px;
+            text-align: center;
+        }
+
+        .auth-button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 22px;
+            border: none;
+            border-radius: 9px;
+            background: linear-gradient(90deg, #e87924, #ffb347);
+            color: #1c1209;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .auth-bottom {
+            text-align: center;
+            margin-top: 20px;
+            color: #ddd;
+        }
+
+        .auth-bottom a {
+            color: #ffb347;
+            text-decoration: none;
+        }
+
+        @media(max-width: 480px) {
+            .auth-card {
+                padding: 25px 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="auth-wrapper">
+    <div class="auth-card">
+
+        <h1>Create Account</h1>
+        <p class="auth-subtitle">Join us and discover amazing food!</p>
+
+        <form id="signupForm">
+
+            <label for="username">Username</label>
+            <input type="text" id="username" placeholder="Enter username" required>
+
+            <label for="fullName">Full Name</label>
+            <input type="text" id="fullName" placeholder="Enter your full name" required>
+
+            <label for="email">Email Address</label>
+            <input type="email" id="email" placeholder="Enter your email" required>
+
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone" placeholder="Enter phone number">
+
+            <label for="userType">Account Type</label>
+            <select id="userType" required>
+                <option value="customer">Customer</option>
+                <option value="restaurant_owner">Restaurant Owner</option>
+            </select>
+
+            <label for="language">Preferred Language</label>
+            <select id="language">
+                <option value="en">English</option>
+                <option value="hi">Hindi</option>
+                <option value="fr">French</option>
+                <option value="es">Spanish</option>
+                <option value="de">German</option>
+                <option value="ja">Japanese</option>
+            </select>
+
+            <label for="password">Create Password</label>
+            <input type="password" id="password"
+                   placeholder="Create a strong password" required>
+
+            <div class="password-rules">
+                <div id="lengthRule" class="rule invalid">
+                    ✖ Minimum 8 characters
+                </div>
+
+                <div id="specialRule" class="rule invalid">
+                    ✖ At least 1 special character
+                </div>
+            </div>
+
+            <label for="confirmPassword">Confirm Password</label>
+            <input type="password" id="confirmPassword"
+                   placeholder="Confirm your password" required>
+
+            <p id="authMessage" class="auth-message"></p>
+
+            <button type="submit" class="auth-button">
+                Create Account
+            </button>
+
+        </form>
+
+        <div class="auth-bottom">
+            Already have an account?
+            <a href="login.html">Login</a>
+            <br><br>
+            <a href="index.html">← Back to Home</a>
+        </div>
+
+    </div>
+</div>
+
+<script>
+const password = document.getElementById("password");
+const confirmPassword = document.getElementById("confirmPassword");
+const message = document.getElementById("authMessage");
+
+const lengthRule = document.getElementById("lengthRule");
+const specialRule = document.getElementById("specialRule");
+
+let passwordTouched = false;
+let confirmTouched = false;
+
+function validatePassword() {
+    const value = password.value;
+
+    const hasLength = value.length >= 8;
+    const hasSpecial = /[^A-Za-z0-9]/.test(value);
+
+    if (passwordTouched) {
+        lengthRule.style.display = "block";
+        specialRule.style.display = "block";
+
+        lengthRule.className = hasLength ? "rule valid" : "rule invalid";
+        lengthRule.textContent = (hasLength ? "✔ " : "✖ ") +
+            "Minimum 8 characters";
+
+        specialRule.className = hasSpecial ? "rule valid" : "rule invalid";
+        specialRule.textContent = (hasSpecial ? "✔ " : "✖ ") +
+            "At least 1 special character";
+    }
+
+    return hasLength && hasSpecial;
+}
+
+function validateConfirmPassword() {
+    if (!confirmTouched || confirmPassword.value === "") {
+        message.textContent = "";
+        return false;
+    }
+
+    if (password.value !== confirmPassword.value) {
+        message.style.color = "#ff5555";
+        message.textContent = "Passwords do not match!";
+        return false;
+    }
+
+    message.style.color = "#4ade80";
+    message.textContent = "Passwords match!";
+    return true;
+}
+
+password.addEventListener("input", function() {
+    passwordTouched = true;
+    validatePassword();
+    validateConfirmPassword();
+});
+
+confirmPassword.addEventListener("input", function() {
+    confirmTouched = true;
+    validateConfirmPassword();
+});
+
+document.getElementById("signupForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    passwordTouched = true;
+    confirmTouched = true;
+
+    const validPassword = validatePassword();
+    const validConfirm = validateConfirmPassword();
+
+    if (!validPassword || !validConfirm) {
+        if (!validPassword) {
+            message.style.color = "#ff5555";
+            message.textContent = "Please enter a valid password!";
+        }
+        return;
+    }
+
+    message.style.color = "#4ade80";
+    message.textContent = "Password is valid! Ready for signup.";
+});
+</script>
+
+</body>
+</html>
