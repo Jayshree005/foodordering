@@ -1,0 +1,806 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SmartDine | Restaurant Menu</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+
+    <style>
+        .menu-page {
+            min-height: 100vh;
+            padding: 130px 7% 70px;
+        }
+
+        .menu-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .menu-header span {
+            color: #e9a23b;
+            letter-spacing: 3px;
+        }
+
+        .menu-header h1 {
+            color: white;
+            font-size: 38px;
+            margin: 15px 0;
+        }
+
+        .menu-header p {
+            color: #ccc;
+        }
+
+        .menu-search {
+            max-width: 550px;
+            margin: 25px auto 35px;
+        }
+
+        .menu-search input {
+            width: 100%;
+            padding: 15px 20px;
+            background: rgba(0,0,0,0.65);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 10px;
+            color: white;
+            outline: none;
+        }
+
+        .category-list {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 40px;
+        }
+
+        .category-btn {
+            padding: 10px 22px;
+            border: 1px solid #e9a23b;
+            border-radius: 25px;
+            color: white;
+            background: rgba(0,0,0,0.6);
+            cursor: pointer;
+        }
+
+        .category-btn.active,
+        .category-btn:hover {
+            background: #e9a23b;
+            color: #111;
+        }
+
+        .smart-food-panel,
+        .reviews-panel {
+            max-width: 1000px;
+            margin: 0 auto 30px;
+            padding: 22px;
+            background: rgba(0,0,0,0.68);
+            border: 1px solid rgba(233,162,59,0.35);
+            border-radius: 14px;
+            color: #fff;
+        }
+
+        .smart-food-panel h2,
+        .reviews-panel h2 {
+            color: #e9a23b;
+            margin-bottom: 12px;
+        }
+
+        .smart-food-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 12px;
+            align-items: end;
+        }
+
+        .smart-food-controls label,
+        .review-form label {
+            display: grid;
+            gap: 6px;
+            color: #ddd;
+        }
+
+        .smart-food-controls input,
+        .smart-food-controls select,
+        .review-form input,
+        .review-form select,
+        .review-form textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 7px;
+            border: 1px solid #777;
+            background: #222;
+            color: white;
+        }
+
+        .smart-food-controls button,
+        .review-form button {
+            padding: 11px 16px;
+            background: #e9a23b;
+            color: #111;
+            border: 0;
+            border-radius: 7px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .recommendation-results,
+        .review-list {
+            display: grid;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .recommendation-item,
+        .review-item {
+            padding: 12px;
+            border: 1px solid rgba(255,255,255,0.14);
+            border-radius: 8px;
+        }
+
+        .recommendation-item h3,
+        .review-item strong {
+            color: #fff;
+        }
+
+        .recommendation-item p,
+        .review-item p,
+        .feature-notice {
+            color: #bbb;
+            margin-top: 6px;
+        }
+
+        .customization-options {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 6px;
+            margin-top: 12px;
+            color: #ddd;
+            font-size: 13px;
+        }
+
+        .customization-options label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .food-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+        }
+
+        .food-card {
+            background: rgba(0,0,0,0.7);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: 0.3s;
+        }
+
+        .food-card:hover {
+            transform: translateY(-6px);
+            border-color: #e9a23b;
+        }
+
+        .food-card img,
+        .food-placeholder {
+            width: 100%;
+            height: 190px;
+            object-fit: cover;
+        }
+
+        .food-placeholder {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 65px;
+            background: rgba(255,255,255,0.08);
+        }
+
+        .food-info {
+            padding: 20px;
+        }
+
+        .food-info h3 {
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .food-info p {
+            color: #bbb;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .food-price {
+            color: #e9a23b;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .food-type {
+            color: #aaa;
+            font-size: 13px;
+            display: block;
+            margin-top: 8px;
+        }
+
+        .add-cart-btn {
+            width: 100%;
+            padding: 12px;
+            margin-top: 15px;
+            background: linear-gradient(135deg, #e9a23b, #d97706);
+            color: #111;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .add-cart-btn:hover {
+            opacity: 0.85;
+        }
+
+        .message {
+            color: white;
+            text-align: center;
+            padding: 35px;
+            grid-column: 1 / -1;
+        }
+
+        .cart-link {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: #e9a23b;
+            color: #111;
+            padding: 15px 22px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            z-index: 100;
+        }
+
+        @media(max-width: 600px) {
+            .menu-page {
+                padding: 110px 5% 60px;
+            }
+
+            .menu-header h1 {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="background-overlay"></div>
+
+    <!-- NAVBAR -->
+    <header class="navbar">
+
+        <a href="index.html" class="logo">
+            <img src="../assets/images/WhatsApp Image 2026-11-04 at 8.51.29 PM (1).jpeg"
+                 alt="SmartDine Logo">
+        </a>
+
+        <nav class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="restaurants.html">Restaurants</a>
+            <a href="index.html#about">About</a>
+        </nav>
+
+        <div class="nav-actions">
+            <a href="login.html" class="login-btn">Login</a>
+            <a href="signup.html" class="signup-btn">Sign Up</a>
+        </div>
+
+    </header>
+
+    <!-- MENU PAGE -->
+    <main class="menu-page">
+
+        <div class="menu-header">
+            <span>DELICIOUS FOOD AWAITS</span>
+
+            <h1 id="restaurantName">Restaurant Menu</h1>
+
+            <p id="restaurantDetails">
+                Explore delicious dishes from your favourite restaurant.
+            </p>
+        </div>
+
+        <!-- SEARCH -->
+        <div class="menu-search">
+            <input
+                type="text"
+                id="searchFood"
+                placeholder="🔍 Search your favourite food..."
+            >
+        </div>
+
+        <!-- CATEGORIES -->
+        <div class="category-list" id="categoryList">
+
+            <button class="category-btn active" data-category="all">
+                All
+            </button>
+
+        </div>
+
+        <section class="smart-food-panel" aria-labelledby="recommendationHeading">
+            <h2 id="recommendationHeading">Food recommendations</h2>
+            <p class="feature-notice">
+                Suggestions use menu data and transparent rules, not a trained AI model.
+                Allergy labels may be incomplete; confirm ingredients with the restaurant.
+            </p>
+            <p class="feature-notice">
+                Customizations are preparation requests and may not be available;
+                confirm availability or any extra charge with the restaurant.
+            </p>
+            <div class="smart-food-controls">
+                <label>Diet
+                    <select id="dietPreference">
+                        <option value="">Any diet</option>
+                        <option value="vegetarian">Vegetarian</option>
+                        <option value="vegan">Vegan</option>
+                        <option value="gluten_free">Gluten-free</option>
+                        <option value="low_calorie">Low-calorie (listed under 450 kcal)</option>
+                        <option value="high_protein">High-protein (listed 15g+)</option>
+                    </select>
+                </label>
+                <label>Allergies to avoid
+                    <input id="allergyInput" type="text" placeholder="e.g. peanuts, shellfish">
+                </label>
+                <label>Tourist city (optional)
+                    <input id="touristCity" type="text" placeholder="e.g. Delhi">
+                </label>
+                <button id="recommendButton" type="button">Find dishes</button>
+            </div>
+            <div id="recommendationNotice" class="feature-notice" aria-live="polite"></div>
+            <div id="recommendationResults" class="recommendation-results"></div>
+        </section>
+
+        <section class="reviews-panel" aria-labelledby="reviewsHeading">
+            <h2 id="reviewsHeading">Customer reviews</h2>
+            <p id="reviewSummary" class="feature-notice">Loading reviews...</p>
+            <div id="reviewList" class="review-list"></div>
+            <form id="reviewForm" class="review-form" hidden>
+                <label>Rating
+                    <select id="reviewRating" required>
+                        <option value="5">5 - Excellent</option>
+                        <option value="4">4 - Good</option>
+                        <option value="3">3 - Okay</option>
+                        <option value="2">2 - Poor</option>
+                        <option value="1">1 - Bad</option>
+                    </select>
+                </label>
+                <label>Review
+                    <textarea id="reviewComment" rows="3" maxlength="2000"
+                              placeholder="Share your experience"></textarea>
+                </label>
+                <button type="submit">Submit review</button>
+            </form>
+            <p id="reviewMessage" class="feature-notice" aria-live="polite"></p>
+        </section>
+
+        <!-- FOOD ITEMS -->
+        <div class="food-grid" id="foodGrid">
+
+            <p class="message">Loading menu...</p>
+
+        </div>
+
+    </main>
+
+    <a href="cart.html" class="cart-link">
+        🛒 Cart (<span id="cartCount">0</span>)
+    </a>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-bottom">
+            <p>© 2026 SmartDine. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script src="../js/api.js"></script>
+    <script>
+
+        const params = new URLSearchParams(window.location.search);
+        const restaurantId = params.get("id");
+
+        const foodGrid = document.getElementById("foodGrid");
+        const categoryList = document.getElementById("categoryList");
+        const searchFood = document.getElementById("searchFood");
+
+        let allFoods = [];
+        let selectedCategory = "all";
+        const customizationOptions = [
+            "less spicy", "no onion", "extra cheese",
+            "less oil", "no sugar", "extra crispy"
+        ];
+
+        // CART DATA
+
+        let cart = SmartDineAPI.readLocalCart();
+
+        function updateCartCount() {
+            const count = cart.reduce((total, item) => total + item.quantity, 0);
+            document.getElementById("cartCount").textContent = count;
+        }
+
+        // LOAD RESTAURANT DETAILS
+
+        async function loadRestaurant() {
+
+            try {
+
+                const response = await fetch(
+                    "http://127.0.0.1:8000/api/restaurants/"
+                );
+
+                const data = await response.json();
+
+                const restaurants = Array.isArray(data)
+                    ? data
+                    : (data.restaurants || []);
+
+                const restaurant = restaurants.find(
+                    item => String(item.id) === String(restaurantId)
+                );
+
+                if (!restaurant) {
+                    document.getElementById("restaurantName").textContent =
+                        "Restaurant Not Found";
+                    return;
+                }
+
+                document.getElementById("restaurantName").textContent =
+                    restaurant.name;
+
+                document.getElementById("restaurantDetails").textContent =
+                    restaurant.city || "Explore our delicious menu";
+
+            } catch (error) {
+                console.error("Restaurant Error:", error);
+            }
+
+        }
+
+        // LOAD FOOD ITEMS
+
+        async function loadFoods() {
+
+            if (!restaurantId) {
+                foodGrid.innerHTML =
+                    '<p class="message">Please select a restaurant first.</p>';
+                return;
+            }
+
+            try {
+
+                const response = await fetch(
+                    `http://127.0.0.1:8000/api/restaurants/${restaurantId}/food-items/`
+                );
+
+                if (!response.ok) {
+                    throw new Error("Food API not available");
+                }
+
+                const data = await response.json();
+
+                allFoods = Array.isArray(data)
+                    ? data
+                    : (data.food_items || data.results || []);
+
+                displayFoods();
+
+            } catch (error) {
+
+                console.error("Food API Error:", error);
+
+                foodGrid.innerHTML = `
+                    <p class="message">
+                        Menu data is not available yet.
+                        The food-items API needs to be connected.
+                    </p>
+                `;
+
+            }
+
+        }
+
+        // LOAD CATEGORIES
+
+        async function loadCategories() {
+
+            try {
+
+                const response = await fetch(
+                    `http://127.0.0.1:8000/api/restaurants/${restaurantId}/categories/`
+                );
+
+                if (!response.ok) {
+                    throw new Error("Category API not available");
+                }
+
+                const data = await response.json();
+
+                const categories = Array.isArray(data)
+                    ? data
+                    : (data.categories || data.results || []);
+
+                categories.forEach(category => {
+
+                    const button = document.createElement("button");
+
+                    button.className = "category-btn";
+                    button.textContent = category.name;
+                    button.dataset.category = category.id;
+
+                    button.addEventListener("click", () => {
+
+                        selectedCategory = String(category.id);
+
+                        document.querySelectorAll(".category-btn")
+                            .forEach(btn => btn.classList.remove("active"));
+
+                        button.classList.add("active");
+
+                        displayFoods();
+
+                    });
+
+                    categoryList.appendChild(button);
+
+                });
+
+            } catch (error) {
+
+                console.log("Category API:", error.message);
+
+            }
+
+        }
+
+        // DISPLAY FOOD ITEMS
+
+        function displayFoods() {
+
+            const search = searchFood.value.toLowerCase().trim();
+
+            const filteredFoods = allFoods.filter(food => {
+
+                const matchesSearch =
+                    (food.name || "").toLowerCase().includes(search);
+
+                const categoryId = food.category?.id ?? food.category;
+
+                const matchesCategory =
+                    selectedCategory === "all" ||
+                    String(categoryId) === selectedCategory;
+
+                return matchesSearch && matchesCategory;
+
+            });
+
+            foodGrid.innerHTML = "";
+
+            if (filteredFoods.length === 0) {
+                foodGrid.innerHTML =
+                    '<p class="message">No food items found.</p>';
+                return;
+            }
+
+            filteredFoods.forEach(food => {
+
+                const card = document.createElement("article");
+                card.className = "food-card";
+
+                const imageHTML = food.image
+                    ? `<img src="${food.image}" alt="Food image">`
+                    : `<div class="food-placeholder">🍽️</div>`;
+
+                card.innerHTML = `
+                    ${imageHTML}
+
+                    <div class="food-info">
+
+                        <h3></h3>
+
+                        <p></p>
+
+                        <div class="food-price">
+                            ₹${Number(food.price || 0).toFixed(2)}
+                        </div>
+
+                        <span class="food-type">
+                            ${food.is_vegetarian ? "🟢 Vegetarian" : "🔴 Non-Vegetarian"}
+                        </span>
+
+                        <p class="food-metadata"></p>
+                        <div class="customization-options">
+                            ${customizationOptions.map(option =>
+                                `<label><input type="checkbox" value="${option}"> ${option}</label>`
+                            ).join("")}
+                        </div>
+
+                        <button class="add-cart-btn">
+                            + Add to Cart
+                        </button>
+
+                    </div>
+                `;
+
+                card.querySelector("h3").textContent = food.name;
+                card.querySelector("p").textContent =
+                    food.description || "Delicious food, freshly prepared.";
+                card.querySelector(".food-metadata").textContent = [
+                    food.calories !== null && food.calories !== undefined
+                        ? food.calories + " kcal" : null,
+                    food.protein_g ? food.protein_g + "g protein" : null,
+                    food.allergens?.length ? "Declared allergens: " + food.allergens.join(", ")
+                        : "Allergens not declared"
+                ].filter(Boolean).join(" · ");
+
+                if (food.is_available === false) {
+                    card.querySelector(".add-cart-btn").disabled = true;
+                    card.querySelector(".add-cart-btn").textContent = "Currently Unavailable";
+                } else {
+                    card.querySelector(".add-cart-btn").addEventListener(
+                        "click",
+                        () => addToCart(
+                            food,
+                            Array.from(card.querySelectorAll(".customization-options input:checked"))
+                                .map(input => input.value)
+                        )
+                    );
+                }
+
+                foodGrid.appendChild(card);
+
+            });
+
+        }
+
+        // ADD TO CART
+
+        async function addToCart(food, customizations) {
+            try {
+                cart = await SmartDineAPI.addCartItem(food, restaurantId, customizations);
+                updateCartCount();
+                alert(food.name + " added to cart!");
+            } catch (error) {
+                alert(error.message);
+            }
+        }
+
+        // SEARCH FOOD
+
+        searchFood.addEventListener("input", displayFoods);
+
+        document.getElementById("recommendButton").addEventListener("click", async () => {
+            const notice = document.getElementById("recommendationNotice");
+            const results = document.getElementById("recommendationResults");
+            const diet = document.getElementById("dietPreference").value;
+            const allergies = document.getElementById("allergyInput").value
+                .split(",").map(value => value.trim()).filter(Boolean);
+            const city = document.getElementById("touristCity").value.trim();
+            const query = new URLSearchParams();
+            if (diet) query.set("diet", diet);
+            if (allergies.length) query.set("allergies", allergies.join(","));
+            if (city) {
+                query.set("city", city);
+                query.set("mode", "tourist");
+            }
+            notice.textContent = "Finding matching dishes...";
+            results.replaceChildren();
+            try {
+                const data = await SmartDineAPI.request(
+                    "/recommendations/dishes/?" + query.toString()
+                );
+                notice.textContent = data.allergy_notice + " " + data.data_notice;
+                if (!data.recommendations.length) {
+                    results.textContent = "No matching dishes have complete enough menu data.";
+                    return;
+                }
+                data.recommendations.forEach(food => {
+                    const item = document.createElement("article");
+                    item.className = "recommendation-item";
+                    const title = document.createElement("h3");
+                    title.textContent = food.name + " — " + food.restaurant_name;
+                    const details = document.createElement("p");
+                    details.textContent = [
+                        food.city,
+                        "₹" + Number(food.price).toFixed(2),
+                        food.dietary_tags.join(", ")
+                    ].filter(Boolean).join(" · ");
+                    const link = document.createElement("a");
+                    link.href = "restaurant-menu.html?id=" + encodeURIComponent(food.restaurant_id);
+                    link.textContent = "View this restaurant's menu";
+                    item.append(title, details, link);
+                    results.appendChild(item);
+                });
+            } catch (error) {
+                notice.textContent = "Recommendations unavailable: " + error.message;
+            }
+        });
+
+        async function loadReviews() {
+            const summary = document.getElementById("reviewSummary");
+            const list = document.getElementById("reviewList");
+            try {
+                const data = await SmartDineAPI.request(
+                    "/restaurants/" + encodeURIComponent(restaurantId) + "/reviews/"
+                );
+                summary.textContent = data.total_reviews
+                    ? data.average_rating.toFixed(1) + " / 5 from " + data.total_reviews +
+                        " reviews · " + data.sentiment_notice
+                    : "No customer reviews yet. " + data.sentiment_notice;
+                data.reviews.forEach(review => {
+                    const card = document.createElement("article");
+                    card.className = "review-item";
+                    const title = document.createElement("strong");
+                    title.textContent = review.customer_name + " · " +
+                        "★".repeat(review.rating) + " · " + review.sentiment;
+                    const comment = document.createElement("p");
+                    comment.textContent = review.comment || "No written comment.";
+                    card.append(title, comment);
+                    list.appendChild(card);
+                });
+            } catch (error) {
+                summary.textContent = "Unable to load reviews: " + error.message;
+            }
+        }
+
+        const reviewOrder = params.get("reviewOrder");
+        const reviewForm = document.getElementById("reviewForm");
+        if (reviewOrder) {
+            reviewForm.hidden = false;
+            reviewForm.addEventListener("submit", async event => {
+                event.preventDefault();
+                const message = document.getElementById("reviewMessage");
+                try {
+                    await SmartDineAPI.request(
+                        "/restaurants/" + encodeURIComponent(restaurantId) + "/reviews/",
+                        {
+                            method: "POST",
+                            body: JSON.stringify({
+                                order_id: reviewOrder,
+                                rating: document.getElementById("reviewRating").value,
+                                comment: document.getElementById("reviewComment").value.trim()
+                            })
+                        }
+                    );
+                    message.textContent = "Thanks for reviewing this restaurant.";
+                    reviewForm.hidden = true;
+                    await loadReviews();
+                } catch (error) {
+                    message.textContent = "Could not submit review: " + error.message;
+                }
+            });
+        }
+        loadReviews();
+
+        // INITIALIZE
+
+        updateCartCount();
+
+        loadRestaurant();
+        loadCategories();
+        loadFoods();
+
+    </script>
+    <script src="../js/auth-nav.js"></script>
+
+</body>
+</html>

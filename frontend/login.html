@@ -130,11 +130,58 @@
     </div>
 </div>
 
+<script src="../js/api.js"></script>
 <script>
-document.getElementById("loginForm").addEventListener("submit", function(e) {
-    e.preventDefault();
-    document.getElementById("authMessage").textContent =
-        "Login form ready. Backend connection will be added next.";
+document.getElementById("loginForm").addEventListener("submit", async function(event) {
+    event.preventDefault();
+
+    const form = event.currentTarget;
+    const button = form.querySelector("button[type='submit']");
+    const message = document.getElementById("authMessage");
+    button.disabled = true;
+    message.textContent = "Signing in...";
+
+    try {
+        const data = await SmartDineAPI.request("/users/login/", {
+            method: "POST",
+            body: JSON.stringify({
+                email: document.getElementById("email").value.trim(),
+                password: document.getElementById("password").value
+            })
+        });
+
+        localStorage.setItem("smartdineToken", data.token);
+        localStorage.setItem("smartdineUser", JSON.stringify(data.user));
+
+        try {
+            await SmartDineAPI.syncGuestCart();
+        } catch (syncError) {
+            message.textContent = "Signed in, but the saved cart could not sync: " + syncError.message;
+            message.style.color = "#ffb347";
+            return;
+        }
+
+        const next = new URLSearchParams(window.location.search).get("next");
+        let destination = new URL("index.html", window.location.href);
+        if (next) {
+            try {
+                const candidate = new URL(next, window.location.href);
+                if (candidate.origin === window.location.origin &&
+                    candidate.pathname.startsWith("/frontend/") &&
+                    candidate.pathname.endsWith(".html")) {
+                    destination = candidate;
+                }
+            } catch (error) {
+                console.error("Invalid post-login destination:", error);
+            }
+        }
+        window.location.href = destination.href;
+    } catch (error) {
+        message.textContent = error.message;
+        message.style.color = "#ff5555";
+    } finally {
+        button.disabled = false;
+    }
 });
 </script>
 

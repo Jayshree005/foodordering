@@ -1,0 +1,455 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SmartDine | Order Confirmation</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+
+    <style>
+        .success-page {
+            min-height: 100vh;
+            padding: 130px 7% 70px;
+        }
+
+        .success-container {
+            max-width: 850px;
+            margin: auto;
+            padding: 40px;
+            background: rgba(0,0,0,0.78);
+            backdrop-filter: blur(18px);
+            border: 1px solid rgba(233,162,59,0.4);
+            border-radius: 18px;
+        }
+
+        .success-header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .success-icon {
+            width: 85px;
+            height: 85px;
+            margin: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(46,180,100,0.15);
+            border: 2px solid #4caf50;
+            border-radius: 50%;
+            color: #4caf50;
+            font-size: 45px;
+        }
+
+        .success-header h1 {
+            color: white;
+            margin: 20px 0 10px;
+            font-size: 32px;
+        }
+
+        .success-header p {
+            color: #ccc;
+            line-height: 1.7;
+        }
+
+        .demo-status {
+            color: #e9a23b !important;
+            font-size: 13px;
+            margin-top: 12px;
+        }
+
+        .order-reference {
+            text-align: center;
+            padding: 18px;
+            margin-bottom: 30px;
+            background: rgba(233,162,59,0.1);
+            border: 1px solid rgba(233,162,59,0.3);
+            border-radius: 10px;
+        }
+
+        .order-reference p {
+            color: #ccc;
+            margin-bottom: 8px;
+        }
+
+        .order-reference h3 {
+            color: #e9a23b;
+            letter-spacing: 2px;
+        }
+
+        .details-section {
+            margin-bottom: 30px;
+        }
+
+        .details-section h2 {
+            color: white;
+            font-size: 20px;
+            margin-bottom: 18px;
+        }
+
+        .details-box {
+            padding: 20px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            color: #ccc;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-row strong {
+            color: white;
+            text-align: right;
+        }
+
+        .food-item {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 14px 0;
+            color: #ccc;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .food-item strong {
+            color: #e9a23b;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            font-size: 21px;
+            color: #e9a23b;
+            font-weight: bold;
+        }
+
+        .payment-status {
+            color: #4caf50 !important;
+        }
+
+        .success-buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 35px;
+        }
+
+        .success-buttons a {
+            padding: 14px 25px;
+            border-radius: 9px;
+            text-decoration: none;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .home-btn {
+            background: linear-gradient(135deg, #e9a23b, #d97706);
+            color: #111;
+        }
+
+        .restaurant-btn {
+            border: 1px solid #e9a23b;
+            color: #e9a23b;
+        }
+
+        .missing-data {
+            color: white;
+            text-align: center;
+            padding: 40px;
+        }
+
+        @media(max-width: 600px) {
+            .success-page {
+                padding: 110px 5% 50px;
+            }
+
+            .success-container {
+                padding: 22px 15px;
+            }
+
+            .success-header h1 {
+                font-size: 25px;
+            }
+
+            .detail-row {
+                font-size: 13px;
+            }
+
+            .success-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="background-overlay"></div>
+
+    <!-- NAVBAR -->
+
+    <header class="navbar">
+
+        <a href="index.html" class="logo">
+            <img src="../assets/images/WhatsApp Image 2026-11-04 at 8.51.29 PM (1).jpeg"
+                 alt="SmartDine Logo">
+        </a>
+
+        <nav class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="restaurants.html">Restaurants</a>
+            <a href="index.html#about">About</a>
+        </nav>
+
+        <div class="nav-actions">
+            <a href="login.html" class="login-btn">Login</a>
+            <a href="signup.html" class="signup-btn">Sign Up</a>
+        </div>
+
+    </header>
+
+    <!-- SUCCESS PAGE -->
+
+    <main class="success-page">
+
+        <div class="success-container" id="successContainer">
+
+            <div class="success-header">
+
+                <div class="success-icon">✓</div>
+
+                <h1>Thank You!</h1>
+
+                <p>Your checkout details have been saved successfully.</p>
+
+                <p class="demo-status">
+                    Loading your order confirmation...
+                </p>
+
+            </div>
+
+            <div class="order-reference">
+
+                <p>Order Number</p>
+
+                <h3 id="orderId">Loading...</h3>
+
+            </div>
+
+            <!-- CUSTOMER DETAILS -->
+
+            <section class="details-section">
+
+                <h2>📍 Delivery Details</h2>
+
+                <div class="details-box">
+
+                    <div class="detail-row">
+                        <span>Customer Name</span>
+                        <strong id="customerName">-</strong>
+                    </div>
+
+                    <div class="detail-row">
+                        <span>Mobile Number</span>
+                        <strong id="customerPhone">-</strong>
+                    </div>
+
+                    <div class="detail-row">
+                        <span>Email</span>
+                        <strong id="customerEmail">-</strong>
+                    </div>
+
+                    <div class="detail-row">
+                        <span>Address</span>
+                        <strong id="customerAddress">-</strong>
+                    </div>
+
+                    <div class="detail-row">
+                        <span>City</span>
+                        <strong id="customerCity">-</strong>
+                    </div>
+
+                    <div class="detail-row">
+                        <span>State</span>
+                        <strong id="customerState">-</strong>
+                    </div>
+
+                    <div class="detail-row">
+                        <span>Pincode</span>
+                        <strong id="customerPincode">-</strong>
+                    </div>
+
+                    <div class="detail-row">
+                        <span>Landmark</span>
+                        <strong id="customerLandmark">-</strong>
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- ORDER ITEMS -->
+
+            <section class="details-section">
+
+                <h2>🍽️ Ordered Items</h2>
+
+                <div class="details-box" id="orderedItems"></div>
+
+            </section>
+
+            <!-- PAYMENT DETAILS -->
+
+            <section class="details-section">
+
+                <h2>💳 Payment Information</h2>
+
+                <div class="details-box">
+
+                    <div class="detail-row">
+                        <span>Payment Method</span>
+                        <strong id="paymentMethod">-</strong>
+                    </div>
+
+                    <div class="detail-row">
+                        <span>Payment Status</span>
+                        <strong class="payment-status" id="paymentStatus">
+                            Pending
+                        </strong>
+                    </div>
+
+                    <div class="detail-row">
+                        <span>Subtotal</span>
+                        <strong id="subtotal">₹0.00</strong>
+                    </div>
+
+                    <div class="detail-row">
+                        <span>Delivery Fee</span>
+                        <strong id="deliveryFee">₹0.00</strong>
+                    </div>
+
+                    <div class="total-row">
+                        <span>Total Amount</span>
+                        <span id="totalAmount">₹0.00</span>
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- BUTTONS -->
+
+            <div class="success-buttons">
+
+                <a href="index.html" class="home-btn">
+                    Back to Home →
+                </a>
+
+                <a href="restaurants.html" class="restaurant-btn">
+                    Order More Food
+                </a>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        <div class="footer-bottom">
+            <p>© 2026 SmartDine. All Rights Reserved.</p>
+            <p>Good Food. Good Mood. ❤️</p>
+        </div>
+
+    </footer>
+
+    <!-- JAVASCRIPT -->
+
+    <script src="../js/api.js"></script>
+    <script>
+        (async function () {
+            const details = JSON.parse(sessionStorage.getItem("smartdineCheckout") || "null");
+            const orderId = new URLSearchParams(window.location.search).get("id") ||
+                (details && details.order && details.order.id);
+            const container = document.getElementById("successContainer");
+            const showValue = (id, value) => {
+                document.getElementById(id).textContent = value || "-";
+            };
+
+            if (!orderId) {
+                container.innerHTML = '<div class="missing-data"><h2>Order reference missing</h2><p>Place an order before viewing confirmation.</p><a href="restaurants.html" class="home-btn">Explore Restaurants</a></div>';
+                return;
+            }
+
+            try {
+                const order = await SmartDineAPI.request("/orders/" + encodeURIComponent(orderId) + "/");
+                document.querySelector(".demo-status").textContent =
+                    "Order status: " + order.status.replace(/_/g, " ");
+                showValue("orderId", order.order_number);
+                showValue("customerName", details && details.customer_name);
+                showValue("customerPhone", details && details.phone);
+                showValue("customerEmail", details && details.email);
+                showValue("customerAddress", order.delivery_address);
+                showValue("customerCity", details && details.city);
+                showValue("customerState", details && details.state);
+                showValue("customerPincode", details && details.pincode);
+                showValue("customerLandmark", details && details.landmark);
+                showValue("paymentMethod", "Cash on Delivery");
+                showValue("paymentStatus", order.payment_status);
+
+                const itemContainer = document.getElementById("orderedItems");
+                itemContainer.innerHTML = "";
+                order.items.forEach(item => {
+                    const row = document.createElement("div");
+                    row.className = "food-item";
+                    const name = document.createElement("span");
+                    name.textContent = item.food_name + " × " + item.quantity;
+                    const price = document.createElement("strong");
+                    price.textContent = "₹" + Number(item.subtotal).toFixed(2);
+                    row.append(name, price);
+                    itemContainer.appendChild(row);
+                });
+                showValue("subtotal", "₹" + Number(order.subtotal).toFixed(2));
+                showValue("deliveryFee", "₹" + Number(order.delivery_charge).toFixed(2));
+                showValue("totalAmount", "₹" + Number(order.total_amount).toFixed(2));
+
+                const tracking = document.createElement("a");
+                tracking.href = "order-tracking.html?id=" + encodeURIComponent(order.id);
+                tracking.className = "restaurant-btn";
+                tracking.textContent = "Track This Order";
+                document.querySelector(".success-buttons").appendChild(tracking);
+            } catch (error) {
+                container.insertAdjacentHTML("afterbegin",
+                    '<p class="missing-data">Could not load this order: ' +
+                    error.message.replace(/[&<>"]/g, character => ({
+                        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"
+                    })[character]) + "</p>");
+            }
+        })();
+    </script>
+    <script src="../js/auth-nav.js"></script>
+
+</body>
+</html>

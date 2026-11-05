@@ -1,0 +1,358 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SmartDine | Restaurants</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+
+    <style>
+        .all-restaurants {
+            min-height: 100vh;
+            padding: 130px 7% 70px;
+        }
+
+        .restaurant-heading {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .restaurant-heading span {
+            color: #e9a23b;
+            letter-spacing: 3px;
+            font-size: 13px;
+        }
+
+        .restaurant-heading h1 {
+            font-size: 38px;
+            color: #fff;
+            margin: 15px 0;
+        }
+
+        .restaurant-heading p {
+            color: #ccc;
+        }
+
+        .restaurant-search {
+            max-width: 550px;
+            margin: 30px auto 45px;
+        }
+
+        .restaurant-search input {
+            width: 100%;
+            padding: 16px 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(0,0,0,0.65);
+            color: white;
+            font-size: 15px;
+            outline: none;
+        }
+
+        .restaurant-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 28px;
+        }
+
+        .restaurant-card {
+            background: rgba(0,0,0,0.65);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 18px;
+            overflow: hidden;
+            transition: 0.3s;
+        }
+
+        .restaurant-card:hover {
+            transform: translateY(-8px);
+            border-color: #e9a23b;
+        }
+
+        .restaurant-card img {
+            width: 100%;
+            height: 190px;
+            object-fit: cover;
+        }
+
+        .restaurant-placeholder {
+            height: 190px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 65px;
+            background: rgba(255,255,255,0.08);
+        }
+
+        .restaurant-info {
+            padding: 22px;
+        }
+
+        .restaurant-info h3 {
+            color: white;
+            font-size: 21px;
+            margin-bottom: 10px;
+        }
+
+        .restaurant-info p {
+            color: #ccc;
+            margin-bottom: 12px;
+        }
+
+        .restaurant-status {
+            color: #e9a23b;
+            font-size: 14px;
+        }
+
+        .menu-btn {
+            display: inline-block;
+            margin-top: 18px;
+            padding: 11px 20px;
+            background: linear-gradient(135deg, #e9a23b, #d97706);
+            color: #111;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        .loading-message {
+            color: white;
+            text-align: center;
+            grid-column: 1 / -1;
+            padding: 35px;
+        }
+
+        @media(max-width: 600px) {
+            .all-restaurants {
+                padding: 110px 5% 50px;
+            }
+
+            .restaurant-heading h1 {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="background-overlay"></div>
+
+    <!-- NAVBAR -->
+    <header class="navbar">
+
+        <a href="index.html" class="logo">
+            <img src="../assets/images/WhatsApp Image 2026-11-04 at 8.51.29 PM (1).jpeg"
+                 alt="SmartDine Logo">
+        </a>
+
+        <nav class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="restaurants.html" class="active">Restaurants</a>
+            <a href="index.html#about">About</a>
+            <a href="index.html#contact">Contact</a>
+        </nav>
+
+        <div class="nav-actions">
+            <a href="login.html" class="login-btn">Login</a>
+            <a href="signup.html" class="signup-btn">Sign Up</a>
+        </div>
+
+        <button class="menu-toggle" id="menuToggle"
+                aria-label="Open menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+    </header>
+
+    <!-- RESTAURANTS SECTION -->
+    <main class="all-restaurants">
+
+        <div class="restaurant-heading">
+            <span>DISCOVER GREAT FOOD</span>
+
+            <h1>Explore All Restaurants</h1>
+
+            <p>
+                Find your favourite restaurant and enjoy delicious food.
+            </p>
+        </div>
+
+        <!-- SEARCH -->
+        <div class="restaurant-search">
+            <input
+                type="text"
+                id="searchRestaurant"
+                placeholder="🔍 Search restaurants by name or city..."
+            >
+        </div>
+
+        <!-- RESTAURANT CARDS -->
+        <div class="restaurant-grid" id="restaurantGrid">
+
+            <p class="loading-message">
+                Loading restaurants...
+            </p>
+
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-bottom">
+            <p>© 2026 SmartDine. All Rights Reserved.</p>
+            <p>Good Food. Good Mood. ❤️</p>
+        </div>
+    </footer>
+
+    <script src="../js/app.js"></script>
+
+    <script>
+
+        const restaurantGrid = document.getElementById("restaurantGrid");
+        const searchInput = document.getElementById("searchRestaurant");
+
+        let allRestaurants = [];
+
+        // FETCH RESTAURANTS FROM DJANGO BACKEND
+
+        async function loadRestaurants() {
+
+            try {
+
+                const response = await fetch(
+                    "http://127.0.0.1:8000/api/restaurants/"
+                );
+
+                if (!response.ok) {
+                    throw new Error("Unable to fetch restaurants");
+                }
+
+                const data = await response.json();
+
+                allRestaurants = Array.isArray(data)
+                    ? data
+                    : (data.restaurants || []);
+
+                displayRestaurants(allRestaurants);
+
+            } catch (error) {
+
+                console.error("Restaurant API Error:", error);
+
+                restaurantGrid.innerHTML = `
+                    <p class="loading-message">
+                        Unable to load restaurants.
+                        Please check that your Django server is running.
+                    </p>
+                `;
+
+            }
+
+        }
+
+        // DISPLAY RESTAURANTS
+
+        function displayRestaurants(restaurants) {
+
+            restaurantGrid.innerHTML = "";
+
+            if (restaurants.length === 0) {
+
+                restaurantGrid.innerHTML = `
+                    <p class="loading-message">
+                        No restaurants found.
+                    </p>
+                `;
+
+                return;
+            }
+
+            restaurants.forEach(restaurant => {
+
+                const card = document.createElement("article");
+                card.className = "restaurant-card";
+
+                const name = restaurant.name || "Restaurant";
+
+                const city = restaurant.city || "Location not available";
+
+                const image = restaurant.image || "";
+
+                const imageHTML = image
+                    ? `<img src="${image}" alt="${name}" onerror="this.outerHTML='<div class=&quot;restaurant-placeholder&quot;>🍽️</div>'">`
+                    : `<div class="restaurant-placeholder">🍽️</div>`;
+
+                const status = restaurant.is_open === true
+                    ? "Open Now"
+                    : restaurant.is_open === false
+                    ? "Currently Closed"
+                    : "Restaurant";
+
+                card.innerHTML = `
+                    ${imageHTML}
+
+                    <div class="restaurant-info">
+
+                        <h3></h3>
+
+                        <p></p>
+
+                        <span class="restaurant-status"></span>
+
+                        <br>
+
+                        <a href="restaurant-menu.html?id=${encodeURIComponent(restaurant.id)}"
+                           class="menu-btn">
+                            Explore Menu →
+                        </a>
+
+                    </div>
+                `;
+
+                card.querySelector("h3").textContent = name;
+                card.querySelector("p").textContent = city;
+                card.querySelector(".restaurant-status").textContent = status;
+
+                restaurantGrid.appendChild(card);
+
+            });
+
+        }
+
+        // SEARCH RESTAURANTS
+
+        searchInput.addEventListener("input", function () {
+
+            const searchValue = this.value.toLowerCase().trim();
+
+            const filteredRestaurants = allRestaurants.filter(restaurant => {
+
+                const name = (restaurant.name || "").toLowerCase();
+                const city = (restaurant.city || "").toLowerCase();
+
+                return name.includes(searchValue) ||
+                       city.includes(searchValue);
+
+            });
+
+            displayRestaurants(filteredRestaurants);
+
+        });
+
+        // LOAD DATA
+
+        loadRestaurants();
+
+    </script>
+    <script src="../js/auth-nav.js"></script>
+
+</body>
+</html>

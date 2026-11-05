@@ -1,0 +1,674 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SmartDine AI | Restaurants Management</title>
+
+    <link rel="stylesheet" href="../../css/admin-dashboard.css">
+
+    <style>
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .page-header p {
+            color: #e0d7ca;
+            margin-top: 8px;
+        }
+
+        .add-btn {
+            background: #edb94f;
+            color: #21170d;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .add-btn:hover {
+            background: #dc8b32;
+        }
+
+        .restaurant-tools {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 22px;
+            flex-wrap: wrap;
+        }
+
+        .restaurant-tools input {
+            flex: 1;
+            min-width: 220px;
+            padding: 13px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 207, 126, 0.25);
+            background: rgba(20, 15, 11, 0.8);
+            color: white;
+            outline: none;
+        }
+
+        .restaurant-card {
+            background: rgba(35, 24, 15, 0.85);
+            border: 1px solid rgba(255, 207, 126, 0.2);
+            border-radius: 14px;
+            padding: 22px;
+            overflow-x: auto;
+        }
+
+        .restaurant-card h2 {
+            color: #edb94f;
+            margin-bottom: 20px;
+        }
+
+        .restaurant-card table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 650px;
+        }
+
+        .restaurant-card th,
+        .restaurant-card td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: #e0d7ca;
+        }
+
+        .restaurant-card th {
+            color: #edb94f;
+        }
+
+        .restaurant-status {
+            padding: 6px 11px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .open-status {
+            background: rgba(46, 160, 67, 0.2);
+            color: #8ee09d;
+        }
+
+        .closed-status {
+            background: rgba(220, 80, 70, 0.2);
+            color: #ff9990;
+        }
+
+        .action-btn {
+            padding: 7px 11px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 2px;
+        }
+
+        .edit-btn {
+            background: #edb94f;
+            color: #21170d;
+        }
+
+        .delete-btn {
+            background: #b94336;
+            color: white;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 15px;
+        }
+
+        .modal-content {
+            background: #24190f;
+            border: 1px solid rgba(255, 207, 126, 0.3);
+            border-radius: 14px;
+            padding: 25px;
+            width: 100%;
+            max-width: 430px;
+        }
+
+        .modal-content h2 {
+            color: #edb94f;
+            margin-bottom: 20px;
+        }
+
+        .modal-content input,
+        .modal-content select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 14px;
+            border-radius: 7px;
+            border: 1px solid rgba(255, 207, 126, 0.3);
+            background: #160f0a;
+            color: white;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .modal-actions button {
+            flex: 1;
+        }
+
+        .cancel-btn {
+            background: #555;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px;
+            cursor: pointer;
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: 25px;
+            color: #e0d7ca;
+        }
+
+        @media(max-width: 600px) {
+            .page-header {
+                align-items: flex-start;
+            }
+
+            .add-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="admin-layout">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+
+            <div class="logo">
+                <img src="../../assets/images/WhatsApp Image 2026-11-04 at 8.51.29 PM (1).jpeg"
+                    alt="SmartDine Logo">
+                <h2>SmartDine AI</h2>
+            </div>
+
+            <p class="admin-label">ADMIN MENU</p>
+
+            <nav>
+                <a href="dashboard.html">📊 Dashboard</a>
+                <a href="restaurants-management.html" class="active">🏬 Restaurants</a>
+                <a href="users-management.html">👥 Users</a>
+                <a href="orders-management.html">📦 Orders</a>
+                <a href="analytics.html">📈 Analytics</a>
+                <a href="../index.html">↩ Back to Website</a>
+            </nav>
+
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+
+            <header class="topbar">
+
+                <button class="menu-toggle" id="menuToggle">☰</button>
+
+                <div>
+                    <h1>Restaurants Management</h1>
+                    <p>Manage all restaurants on your platform.</p>
+                </div>
+
+                <div class="admin-profile">
+                    <div class="admin-avatar">A</div>
+                    <div>
+                        <strong>Admin</strong>
+                        <p>Administrator</p>
+                    </div>
+                </div>
+
+            </header>
+
+            <!-- PAGE HEADER -->
+            <section class="page-header">
+
+                <div>
+                    <h2 class="section-title">All Restaurants</h2>
+                    <p>Add, update and manage restaurant details.</p>
+                </div>
+
+                <button class="add-btn" id="openRestaurantModal" type="button">
+                    + Add New Restaurant
+                </button>
+
+            </section>
+
+            <!-- SEARCH -->
+            <div class="restaurant-tools">
+                <input type="text" id="searchRestaurant"
+                    placeholder="Search by restaurant name or location...">
+            </div>
+
+            <!-- RESTAURANT TABLE -->
+            <section class="restaurant-card">
+
+                <h2>Restaurant List</h2>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Restaurant Name</th>
+                            <th>Location</th>
+                            <th>Contact</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="restaurantTable"></tbody>
+                </table>
+
+                <p id="emptyMessage" class="empty-message" style="display:none;">
+                    No restaurants found.
+                </p>
+
+            </section>
+
+        </main>
+
+    </div>
+
+    <!-- ADD / EDIT MODAL -->
+    <div class="modal" id="restaurantModal">
+
+        <div class="modal-content">
+
+            <h2 id="modalTitle">Add New Restaurant</h2>
+
+            <form id="restaurantForm">
+
+                <input type="hidden" id="editId">
+
+                <input type="text" id="restaurantName"
+                    placeholder="Restaurant Name" required>
+
+                <input type="text" id="restaurantLocation"
+                    placeholder="Restaurant Location" required>
+
+                <input type="tel" id="restaurantContact"
+                    placeholder="Contact Number" required>
+
+                <select id="restaurantStatus" required>
+                    <option value="Open">Open</option>
+                    <option value="Closed">Closed</option>
+                </select>
+
+                <div class="modal-actions">
+                    <button type="submit" class="add-btn">Save Restaurant</button>
+                    <button type="button" class="cancel-btn"
+                        onclick="closeModal()">Cancel</button>
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        let restaurants = [];
+
+        const restaurantTable = document.getElementById("restaurantTable");
+        const modal = document.getElementById("restaurantModal");
+        const form = document.getElementById("restaurantForm");
+
+        // DISPLAY RESTAURANTS
+        function displayRestaurants(data = restaurants) {
+
+            restaurantTable.innerHTML = "";
+
+            document.getElementById("emptyMessage").style.display =
+                data.length === 0 ? "block" : "none";
+
+            data.forEach(restaurant => {
+
+                const row = document.createElement("tr");
+
+                const values = [
+                    restaurant.id,
+                    restaurant.name,
+                    restaurant.location,
+                    restaurant.contact
+                ];
+
+                values.forEach(value => {
+                    const cell = document.createElement("td");
+                    cell.textContent = value;
+                    row.appendChild(cell);
+                });
+
+                const statusCell = document.createElement("td");
+                const status = document.createElement("span");
+
+                status.className = restaurant.status === "Open"
+                    ? "restaurant-status open-status"
+                    : "restaurant-status closed-status";
+
+                status.textContent = restaurant.status;
+                statusCell.appendChild(status);
+                row.appendChild(statusCell);
+
+                const actionCell = document.createElement("td");
+
+                const editButton = document.createElement("button");
+                editButton.className = "action-btn edit-btn";
+                editButton.textContent = "Edit";
+                editButton.addEventListener("click", () => editRestaurant(restaurant.id));
+
+                const deleteButton = document.createElement("button");
+                deleteButton.className = "action-btn delete-btn";
+                deleteButton.textContent = "Delete";
+                deleteButton.addEventListener("click", () => deleteRestaurant(restaurant.id));
+
+                actionCell.append(editButton, deleteButton);
+                row.appendChild(actionCell);
+
+                restaurantTable.appendChild(row);
+
+            });
+
+        }
+
+        // OPEN MODAL
+        function openModal() {
+            form.reset();
+            document.getElementById("editId").value = "";
+            document.getElementById("modalTitle").textContent = "Add New Restaurant";
+            modal.style.display = "flex";
+        }
+
+        // CLOSE MODAL
+        function closeModal() {
+            modal.style.display = "none";
+        }
+
+        // ADD OR UPDATE RESTAURANT
+        form.addEventListener("submit", function (event) {
+
+            event.preventDefault();
+
+            const id = document.getElementById("editId").value;
+
+            const restaurant = {
+                id: id ? Number(id) : Date.now(),
+                name: document.getElementById("restaurantName").value.trim(),
+                location: document.getElementById("restaurantLocation").value.trim(),
+                contact: document.getElementById("restaurantContact").value.trim(),
+                status: document.getElementById("restaurantStatus").value
+            };
+
+            if (id) {
+
+                restaurants = restaurants.map(item =>
+                    item.id === Number(id) ? restaurant : item
+                );
+
+            } else {
+
+                restaurants.push(restaurant);
+
+            }
+
+            displayRestaurants();
+            closeModal();
+            form.reset();
+
+        });
+
+        // EDIT RESTAURANT
+        function editRestaurant(id) {
+
+            const restaurant = restaurants.find(item => item.id === id);
+
+            if (!restaurant) return;
+
+            document.getElementById("editId").value = restaurant.id;
+            document.getElementById("restaurantName").value = restaurant.name;
+            document.getElementById("restaurantLocation").value = restaurant.location;
+            document.getElementById("restaurantContact").value = restaurant.contact;
+            document.getElementById("restaurantStatus").value = restaurant.status;
+
+            document.getElementById("modalTitle").textContent = "Edit Restaurant";
+
+            modal.style.display = "flex";
+
+        }
+
+        // DELETE RESTAURANT
+        function deleteRestaurant(id) {
+
+            if (!confirm("Are you sure you want to delete this restaurant?")) {
+                return;
+            }
+
+            restaurants = restaurants.filter(item => item.id !== id);
+
+            displayRestaurants();
+
+        }
+
+        // SEARCH RESTAURANT
+        document.getElementById("searchRestaurant").addEventListener("input", function () {
+
+            const searchValue = this.value.toLowerCase();
+
+            const filtered = restaurants.filter(restaurant =>
+                restaurant.name.toLowerCase().includes(searchValue) ||
+                restaurant.location.toLowerCase().includes(searchValue)
+            );
+
+            displayRestaurants(filtered);
+
+        });
+
+        // MOBILE MENU
+        const menuToggle = document.getElementById("menuToggle");
+        const sidebar = document.querySelector(".sidebar");
+
+        if (menuToggle && sidebar) {
+            menuToggle.addEventListener("click", () => {
+                sidebar.classList.toggle("active");
+            });
+        }
+
+    </script>
+    <script src="../../js/admin-api.js"></script>
+    <script>
+        (async function () {
+        const user = await SmartDineAdminAPI.requireRestaurantManager();
+        if (!user) return;
+        if (!user.is_staff) {
+            document.querySelector(".admin-label").textContent = "RESTAURANT OWNER";
+            document.querySelector(".topbar .admin-profile strong").textContent =
+                user.first_name || user.username;
+            document.querySelector(".topbar .admin-profile p").textContent =
+                "Restaurant Owner";
+            document.querySelectorAll(".sidebar nav a").forEach(link => {
+                const href = link.getAttribute("href");
+                if (!href.includes("restaurants-management.html") &&
+                    href !== "../index.html") {
+                    link.hidden = true;
+                    link.style.display = "none";
+                }
+            });
+            document.querySelector(".topbar h1").textContent = "My Restaurants";
+            document.querySelector(".page-header .section-title").textContent =
+                "Your Restaurants";
+            document.querySelector(".page-header p").textContent =
+                "Create and manage your restaurants and menus.";
+        }
+
+            const table = document.getElementById("restaurantTable");
+            const modal = document.getElementById("restaurantModal");
+            const form = document.getElementById("restaurantForm").cloneNode(true);
+            document.getElementById("restaurantForm").replaceWith(form);
+            const search = document.getElementById("searchRestaurant");
+            const searchInput = search.cloneNode(true);
+            search.replaceWith(searchInput);
+            let restaurants = [];
+
+            function closeModal() {
+                modal.style.display = "none";
+            }
+
+            function openModal(restaurant) {
+                form.reset();
+                document.getElementById("editId").value = restaurant ? restaurant.id : "";
+                document.getElementById("modalTitle").textContent =
+                    restaurant ? "Edit Restaurant" : "Add New Restaurant";
+                if (restaurant) {
+                    document.getElementById("restaurantName").value = restaurant.name;
+                    document.getElementById("restaurantLocation").value = restaurant.city;
+                    document.getElementById("restaurantContact").value = restaurant.phone_number;
+                    document.getElementById("restaurantStatus").value =
+                        restaurant.is_open ? "Open" : "Closed";
+                }
+                modal.style.display = "flex";
+            }
+
+            async function loadRestaurants() {
+                const data = await SmartDineAdminAPI.request("/restaurants/manage/");
+                restaurants = data.restaurants || [];
+                render();
+            }
+
+            function render() {
+                const query = searchInput.value.trim().toLowerCase();
+                const filtered = restaurants.filter(restaurant =>
+                    (restaurant.name + " " + restaurant.city).toLowerCase().includes(query)
+                );
+                table.innerHTML = "";
+                document.getElementById("emptyMessage").style.display =
+                    filtered.length ? "none" : "block";
+                filtered.forEach(restaurant => {
+                    const row = document.createElement("tr");
+                    [
+                        restaurant.id,
+                        restaurant.name,
+                        restaurant.city,
+                        restaurant.phone_number
+                    ].forEach(value => {
+                        const cell = document.createElement("td");
+                        cell.textContent = value;
+                        row.appendChild(cell);
+                    });
+                    const statusCell = document.createElement("td");
+                    const badge = document.createElement("span");
+                    badge.className = "restaurant-status " +
+                        (restaurant.is_open && restaurant.is_active ? "open-status" : "closed-status");
+                    badge.textContent = !restaurant.is_active ? "Inactive" :
+                        restaurant.is_open ? "Open" : "Closed";
+                    statusCell.appendChild(badge);
+                    row.appendChild(statusCell);
+
+                    const actions = document.createElement("td");
+                    const edit = document.createElement("button");
+                    edit.type = "button";
+                    edit.className = "action-btn edit-btn";
+                    edit.textContent = "Edit";
+                    edit.addEventListener("click", () => openModal(restaurant));
+                    const menu = document.createElement("a");
+                    menu.className = "action-btn edit-btn";
+                    menu.href = "menu-management.html?restaurant=" +
+                        encodeURIComponent(restaurant.id);
+                    menu.textContent = "Manage Menu";
+                    const qr = document.createElement("a");
+                    qr.className = "action-btn edit-btn";
+                    qr.href = "qr-code.html?restaurant=" +
+                        encodeURIComponent(restaurant.id);
+                    qr.textContent = "Generate QR";
+                    const toggle = document.createElement("button");
+                    toggle.type = "button";
+                    toggle.className = "action-btn delete-btn";
+                    toggle.textContent = restaurant.is_active ? "Deactivate" : "Activate";
+                    toggle.addEventListener("click", async () => {
+                        if (restaurant.is_active && !confirm("Deactivate this restaurant?")) return;
+                        try {
+                            if (restaurant.is_active) {
+                                await SmartDineAdminAPI.request(
+                                    "/restaurants/" + restaurant.id + "/delete/",
+                                    { method: "DELETE" }
+                                );
+                            } else {
+                                await SmartDineAdminAPI.request(
+                                    "/restaurants/" + restaurant.id + "/update/",
+                                    { method: "PATCH", body: JSON.stringify({ is_active: true }) }
+                                );
+                            }
+                            await loadRestaurants();
+                        } catch (error) {
+                            alert(error.message);
+                        }
+                    });
+                    actions.append(edit, menu, qr, toggle);
+                    row.appendChild(actions);
+                    table.appendChild(row);
+                });
+            }
+
+            document.getElementById("openRestaurantModal").addEventListener("click", () => openModal());
+            modal.querySelector(".cancel-btn").addEventListener("click", closeModal);
+            form.addEventListener("submit", async event => {
+                event.preventDefault();
+                const id = document.getElementById("editId").value;
+                const city = document.getElementById("restaurantLocation").value.trim();
+                const payload = {
+                    name: document.getElementById("restaurantName").value.trim(),
+                    city: city,
+                    address: city,
+                    phone_number: document.getElementById("restaurantContact").value.trim(),
+                    is_open: document.getElementById("restaurantStatus").value === "Open"
+                };
+                const button = form.querySelector("button[type='submit']");
+                button.disabled = true;
+                try {
+                    await SmartDineAdminAPI.request(
+                        id ? "/restaurants/" + id + "/update/" : "/restaurants/manage/",
+                        { method: id ? "PATCH" : "POST", body: JSON.stringify(payload) }
+                    );
+                    closeModal();
+                    await loadRestaurants();
+                } catch (error) {
+                    alert(error.message);
+                } finally {
+                    button.disabled = false;
+                }
+            });
+            searchInput.addEventListener("input", render);
+
+            try {
+                await loadRestaurants();
+            } catch (error) {
+                table.textContent = error.message;
+            }
+        })();
+    </script>
+
+</body>
+</html>

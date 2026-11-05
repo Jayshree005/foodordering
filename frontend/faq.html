@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SmartDine | FAQs</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+
+    <style>
+        .faq-container {
+            max-width: 950px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+
+        .faq-header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .faq-header h1 {
+            color: #f5b942;
+            font-size: 36px;
+            margin-bottom: 12px;
+        }
+
+        .faq-header p {
+            color: #ddd;
+            line-height: 1.7;
+        }
+
+        .faq-card {
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(18px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 18px;
+            padding: 25px;
+            margin-bottom: 25px;
+            color: white;
+        }
+
+        .faq-card h2 {
+            color: #f5b942;
+            margin-bottom: 20px;
+            font-size: 21px;
+        }
+
+        .faq-item {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.13);
+        }
+
+        .faq-item:last-child {
+            border-bottom: none;
+        }
+
+        .faq-question {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 19px 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-align: left;
+            gap: 15px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .faq-question:hover {
+            color: #f5b942;
+        }
+
+        .faq-icon {
+            color: #f5b942;
+            font-size: 23px;
+            transition: transform 0.3s;
+        }
+
+        .faq-item.active .faq-icon {
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            display: none;
+            color: #ccc;
+            line-height: 1.8;
+            font-size: 14px;
+            padding: 0 30px 18px 5px;
+        }
+
+        .faq-item.active .faq-answer {
+            display: block;
+        }
+
+        .faq-cta {
+            text-align: center;
+        }
+
+        .faq-cta p {
+            color: #ddd;
+            line-height: 1.7;
+        }
+
+        .faq-btn {
+            display: inline-block;
+            margin-top: 18px;
+            padding: 12px 25px;
+            background: #f5b942;
+            color: #171717;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .faq-btn:hover {
+            background: #ffd477;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 600px) {
+            .faq-container {
+                margin: 25px auto;
+                padding: 12px;
+            }
+
+            .faq-header h1 {
+                font-size: 29px;
+            }
+
+            .faq-card {
+                padding: 18px;
+            }
+
+            .faq-question {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <header>
+        <nav class="navbar">
+
+            <a href="index.html" class="logo">
+                <img src="../assets/images/WhatsApp Image 2026-11-04 at 8.51.29 PM (1).jpeg"
+                    alt="SmartDine Logo">
+                <span>SmartDine</span>
+            </a>
+
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="restaurants.html">Restaurants</a>
+                <a href="about.html">About</a>
+                <a href="contact.html">Contact</a>
+                <a href="my-orders.html">My Orders</a>
+                <a href="profile.html">Profile</a>
+            </div>
+
+            <button class="menu-toggle" id="menuToggle">☰</button>
+
+        </nav>
+
+        <div class="mobile-menu" id="mobileMenu">
+            <a href="index.html">Home</a>
+            <a href="restaurants.html">Restaurants</a>
+            <a href="about.html">About</a>
+            <a href="contact.html">Contact</a>
+            <a href="my-orders.html">My Orders</a>
+            <a href="profile.html">Profile</a>
+        </div>
+    </header>
+
+
+    <!-- FAQ SECTION -->
+    <main class="faq-container">
+
+        <div class="faq-header">
+            <h1>Frequently Asked Questions</h1>
+            <p>
+                Find answers to common questions about SmartDine,
+                ordering food, payments and our smart features.
+            </p>
+        </div>
+
+
+        <!-- GENERAL QUESTIONS -->
+        <section class="faq-card">
+
+            <h2>General Questions</h2>
+
+            <div class="faq-item">
+                <button class="faq-question">
+                    What is SmartDine?
+                    <span class="faq-icon">+</span>
+                </button>
+
+                <div class="faq-answer">
+                    SmartDine is a multi-restaurant online food ordering
+                    platform where customers can explore different restaurants,
+                    browse menus, customize dishes and place food orders.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question">
+                    How can I use SmartDine?
+                    <span class="faq-icon">+</span>
+                </button>
+
+                <div class="faq-answer">
+                    Visit the website, explore available restaurants,
+                    select your favourite food, add items to your cart
+                    and proceed to checkout.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question">
+                    Do I need an account to order food?
+                    <span class="faq-icon">+</span>
+                </button>
+
+                <div class="faq-answer">
+                    You can create an account using the signup page
+                    to access your profile and manage your orders.
+                </div>
+            </div>
+
+        </section>
+
+
+        <!-- ORDER QUESTIONS -->
+        <section class="faq-card">
+
+            <h2>Orders and Delivery</h2>
+
+            <div class="faq-item">
+                <button class="faq-question">
+                    How can I place an order?
+                    <span class="faq-icon">+</span>
+                </button>
+
+                <div class="faq-answer">
+                    Choose a restaurant, select food items, add them
+                    to your cart, enter delivery details and confirm
+                    your order through checkout.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question">
+                    How can I track my order?
+                    <span class="faq-icon">+</span>
+                </button>
+
+                <div class="faq-answer">
+                    Open the My Orders section and select the relevant
+                    order to view its tracking information.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question">
+                    Can I view my previous orders?
+                    <span class="faq-icon">+</span>
+                </button>
+
+                <div class="faq-answer">
+                    Yes, the My Orders section is designed to show
+                    your previous and current orders.
+                </div>
+            </div>
+
+        </section>
+
+
+        <!-- AI FEATURES -->
+        <section class="faq-card">
+
+            <h2>Smart Features</h2>
+
+            <div class="faq-item">
+                <button class="faq-question">
+                    What is AI Diet Recommendation?
+                    <span class="faq-icon">+</span>
+                </button>
+
+                <div class="faq-answer">
+                    It is a smart feature designed to suggest food
+                    options based on customer dietary preferences
+                    and requirements.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question">
+                    How does Allergy Detection work?
+                    <span class="faq-icon">+</span>
+                </button>
+
+                <div class="faq-answer">
+                    The feature is designed to highlight potential
+                    allergens in food ingredients so customers can
+                    make more informed food choices. Always verify
+                    allergy information with the restaurant.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question">
+                    Can I customize my food?
+                    <span class="faq-icon">+</span>
+                </button>
+
+                <div class="faq-answer">
+                    Yes, the AI Dish Customizer is designed to support
+                    preferences such as less spicy, no onion, less oil,
+                    no sugar and extra crispy.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question">
+                    What is Tourist Mode?
+                    <span class="faq-icon">+</span>
+                </button>
+
+                <div class="faq-answer">
+                    Tourist Mode is designed to help visitors explore
+                    food options and understand restaurant menus more easily.
+                </div>
+            </div>
+
+        </section>
+
+
+        <!-- PAYMENT QUESTIONS -->
+        <section class="faq-card">
+
+            <h2>Payments</h2>
+
+            <div class="faq-item">
+                <button class="faq-question">
+                    Which payment methods are supported?
+                    <span class="faq-icon">+</span>
+                </button>
+
+                <div class="faq-answer">
+                    Available payment options will be displayed
+                    during checkout. Supported methods depend on
+                    the payment integration enabled on the platform.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question">
+                    What should I do if my payment fails?
+                    <span class="faq-icon">+</span>
+                </button>
+
+                <div class="faq-answer">
+                    Check your payment status before trying again.
+                    If the amount has been deducted but the order
+                    is not confirmed, contact customer support.
+                </div>
+            </div>
+
+        </section>
+
+
+        <!-- CONTACT CTA -->
+        <section class="faq-card faq-cta">
+
+            <h2>Still Have Questions?</h2>
+
+            <p>
+                If you cannot find the answer you are looking for,
+                feel free to contact our support team.
+            </p>
+
+            <a href="contact.html" class="faq-btn">
+                Contact Support
+            </a>
+
+        </section>
+
+    </main>
+
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <p>© 2026 SmartDine. All Rights Reserved.</p>
+    </footer>
+
+
+    <script src="../js/app.js"></script>
+
+    <script>
+        // FAQ ACCORDION
+        const faqItems = document.querySelectorAll(".faq-item");
+
+        faqItems.forEach(function (item) {
+
+            const question = item.querySelector(".faq-question");
+
+            question.addEventListener("click", function () {
+
+                const isActive = item.classList.contains("active");
+
+                faqItems.forEach(function (faq) {
+                    faq.classList.remove("active");
+                });
+
+                if (!isActive) {
+                    item.classList.add("active");
+                }
+
+            });
+
+        });
+    </script>
+
+    <script src="../js/auth-nav.js"></script>
+
+</body>
+</html>

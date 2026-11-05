@@ -147,6 +147,11 @@ MEDIA_URL = '/media/'
 
 MEDIA_ROOT = BASE_DIR / 'media'
 
+FRONTEND_BASE_URL = os.environ.get(
+    'FRONTEND_BASE_URL',
+    'http://127.0.0.1:5500/frontend',
+).rstrip('/')
+
 
 # REST FRAMEWORK
 REST_FRAMEWORK = {
@@ -158,4 +163,5 @@ REST_FRAMEWORK = {
 # CORS SETTINGS
 CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:5500",
+    "http://localhost:5500",
 ]

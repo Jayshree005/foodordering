@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SmartDine AI | Restaurant QR Code</title>
+    <link rel="stylesheet" href="../../css/admin-dashboard.css">
+    <style>
+        main { max-width: 760px; margin: auto; padding: 32px 20px; color: #fff; }
+        h1, h2 { color: #e9a23b; }
+        section { margin-top: 24px; padding: 24px; background: #171717; border-radius: 12px; }
+        label { display: grid; gap: 8px; max-width: 420px; }
+        select { padding: 10px; border: 1px solid #555; border-radius: 6px; background: #222; color: #fff; }
+        button, .download { display: inline-block; margin: 16px 8px 0 0; padding: 10px 14px; border: 0; border-radius: 6px; background: #e9a23b; color: #111; font-weight: 700; cursor: pointer; text-decoration: none; }
+        #qrImage { display: block; width: min(100%, 360px); height: auto; margin: 20px auto; background: #fff; }
+        #message { color: #ddd; }
+    </style>
+</head>
+<body>
+    <main>
+        <p><a href="restaurants-management.html">← Restaurant management</a></p>
+        <h1>Restaurant menu QR code</h1>
+        <p>Generate a downloadable QR code that opens this restaurant's menu.</p>
+        <section>
+            <label for="restaurantSelect">Restaurant
+                <select id="restaurantSelect" required></select>
+            </label>
+            <button id="generateButton" type="button">Generate QR code</button>
+            <p id="message" aria-live="polite"></p>
+            <div id="result" hidden>
+                <img id="qrImage" alt="QR code for the restaurant menu">
+                <p><a id="menuLink" target="_blank" rel="noopener"></a></p>
+                <a id="downloadLink" class="download" download="restaurant-menu-qr.png">Download PNG</a>
+            </div>
+        </section>
+    </main>
+    <script src="../../js/admin-api.js"></script>
+    <script>
+        (async function () {
+            if (!await SmartDineAdminAPI.requireRestaurantManager()) return;
+
+            const select = document.getElementById("restaurantSelect");
+            const message = document.getElementById("message");
+            const result = document.getElementById("result");
+            const queryRestaurant = new URLSearchParams(location.search).get("restaurant");
+            try {
+                const data = await SmartDineAdminAPI.request("/restaurants/manage/");
+                select.replaceChildren();
+                data.restaurants.filter(restaurant => restaurant.is_active).forEach(restaurant => {
+                    const option = document.createElement("option");
+                    option.value = restaurant.id;
+                    option.textContent = restaurant.name + " — " + restaurant.city;
+                    select.appendChild(option);
+                });
+                if (!select.options.length) {
+                    message.textContent = "No active restaurants are available.";
+                    document.getElementById("generateButton").disabled = true;
+                    return;
+                }
+                if (queryRestaurant && /^\d+$/.test(queryRestaurant)) {
+                    select.value = queryRestaurant;
+                }
+            } catch (error) {
+                message.textContent = error.message;
+                return;
+            }
+
+            document.getElementById("generateButton").addEventListener("click", async event => {
+                const button = event.currentTarget;
+                button.disabled = true;
+                message.textContent = "Generating QR code…";
+                result.hidden = true;
+                try {
+                    const data = await SmartDineAdminAPI.request(
+                        "/restaurants/" + encodeURIComponent(select.value) + "/qr-code/"
+                    );
+                    document.getElementById("qrImage").src = data.qr_code;
+                    const menuLink = document.getElementById("menuLink");
+                    menuLink.href = data.menu_url;
+                    menuLink.textContent = data.menu_url;
+                    document.getElementById("downloadLink").href = data.qr_code;
+                    result.hidden = false;
+                    message.textContent = "QR code ready.";
+                } catch (error) {
+                    message.textContent = error.message;
+                } finally {
+                    button.disabled = false;
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

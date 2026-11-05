@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SmartDine | Contact Us</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+
+    <style>
+        .contact-container {
+            max-width: 1100px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+
+        .contact-header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .contact-header h1 {
+            color: #f5b942;
+            font-size: 36px;
+            margin-bottom: 12px;
+        }
+
+        .contact-header p {
+            color: #ddd;
+            line-height: 1.7;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 0.8fr 1.2fr;
+            gap: 25px;
+        }
+
+        .contact-card {
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(18px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 18px;
+            padding: 30px;
+            color: white;
+        }
+
+        .contact-card h2 {
+            color: #f5b942;
+            margin-bottom: 20px;
+        }
+
+        .contact-info {
+            margin-bottom: 25px;
+        }
+
+        .contact-info h3 {
+            color: #f5b942;
+            font-size: 16px;
+            margin-bottom: 7px;
+        }
+
+        .contact-info p {
+            color: #ddd;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .contact-form .form-group {
+            margin-bottom: 18px;
+        }
+
+        .contact-form label {
+            display: block;
+            margin-bottom: 8px;
+            color: #eee;
+            font-size: 14px;
+        }
+
+        .contact-form input,
+        .contact-form select,
+        .contact-form textarea {
+            width: 100%;
+            padding: 13px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            background: rgba(255, 255, 255, 0.08);
+            color: white;
+            outline: none;
+            font-family: inherit;
+            font-size: 14px;
+        }
+
+        .contact-form select option {
+            background: #222;
+            color: white;
+        }
+
+        .contact-form input:focus,
+        .contact-form select:focus,
+        .contact-form textarea:focus {
+            border-color: #f5b942;
+        }
+
+        .contact-form textarea {
+            min-height: 130px;
+            resize: vertical;
+        }
+
+        .contact-form input::placeholder,
+        .contact-form textarea::placeholder {
+            color: #aaa;
+        }
+
+        .contact-submit {
+            width: 100%;
+            padding: 13px;
+            background: #f5b942;
+            color: #171717;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .contact-submit:hover {
+            background: #ffd477;
+            transform: translateY(-2px);
+        }
+
+        .form-message {
+            margin-top: 15px;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .contact-note {
+            color: #aaa;
+            font-size: 12px;
+            margin-top: 12px;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 750px) {
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-header h1 {
+                font-size: 29px;
+            }
+
+            .contact-container {
+                margin: 25px auto;
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <header>
+        <nav class="navbar">
+
+            <a href="index.html" class="logo">
+                <img src="../assets/images/WhatsApp Image 2026-11-04 at 8.51.29 PM (1).jpeg"
+                    alt="SmartDine Logo">
+                <span>SmartDine</span>
+            </a>
+
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="restaurants.html">Restaurants</a>
+                <a href="about.html">About</a>
+                <a href="contact.html">Contact</a>
+                <a href="my-orders.html">My Orders</a>
+                <a href="profile.html">Profile</a>
+            </div>
+
+            <button class="menu-toggle" id="menuToggle">☰</button>
+
+        </nav>
+
+        <div class="mobile-menu" id="mobileMenu">
+            <a href="index.html">Home</a>
+            <a href="restaurants.html">Restaurants</a>
+            <a href="about.html">About</a>
+            <a href="contact.html">Contact</a>
+            <a href="my-orders.html">My Orders</a>
+            <a href="profile.html">Profile</a>
+        </div>
+    </header>
+
+
+    <!-- CONTACT SECTION -->
+    <main class="contact-container">
+
+        <div class="contact-header">
+            <h1>Contact Us</h1>
+            <p>
+                Have a question or need assistance?
+                We would love to hear from you.
+                Send us a message and our team will get back to you.
+            </p>
+        </div>
+
+
+        <div class="contact-grid">
+
+            <!-- CONTACT INFORMATION -->
+            <section class="contact-card">
+
+                <h2>Get In Touch</h2>
+
+                <div class="contact-info">
+                    <h3>📧 Email Support</h3>
+                    <p>support@smartdine.com</p>
+                </div>
+
+                <div class="contact-info">
+                    <h3>📞 Phone Support</h3>
+                    <p>+91 98765 43210</p>
+                </div>
+
+                <div class="contact-info">
+                    <h3>🕒 Support Hours</h3>
+                    <p>Monday – Saturday</p>
+                    <p>9:00 AM – 6:00 PM</p>
+                </div>
+
+                <div class="contact-info">
+                    <h3>🍽️ SmartDine Support</h3>
+                    <p>
+                        For order-related questions, restaurant information,
+                        payment issues or general assistance, contact us
+                        through this page.
+                    </p>
+                </div>
+
+            </section>
+
+
+            <!-- CONTACT FORM -->
+            <section class="contact-card">
+
+                <h2>Send Us a Message</h2>
+
+                <form class="contact-form" id="contactForm">
+
+                    <div class="form-group">
+                        <label for="contactName">Full Name</label>
+                        <input type="text" id="contactName"
+                            placeholder="Enter your full name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contactEmail">Email Address</label>
+                        <input type="email" id="contactEmail"
+                            placeholder="Enter your email address" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contactSubject">Subject</label>
+
+                        <select id="contactSubject" required>
+                            <option value="">Select a subject</option>
+                            <option value="Order Issue">Order Issue</option>
+                            <option value="Payment Issue">Payment Issue</option>
+                            <option value="Restaurant Query">Restaurant Query</option>
+                            <option value="Food Customization">Food Customization</option>
+                            <option value="Technical Support">Technical Support</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contactMessage">Your Message</label>
+                        <textarea id="contactMessage"
+                            placeholder="Write your message here..."
+                            required></textarea>
+                    </div>
+
+                    <button type="submit" class="contact-submit">
+                        Send Message
+                    </button>
+
+                    <p id="contactFormMessage" class="form-message"></p>
+
+                    <p class="contact-note">
+                        Your message will be sent securely to SmartDine support.
+                    </p>
+
+                </form>
+
+            </section>
+
+        </div>
+
+    </main>
+
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <p>© 2026 SmartDine. All Rights Reserved.</p>
+    </footer>
+
+
+    <script src="../js/app.js"></script>
+
+    <script src="../js/api.js"></script>
+    <script>
+        const contactForm = document.getElementById("contactForm");
+        const contactFormMessage = document.getElementById("contactFormMessage");
+
+        if (contactForm) {
+            contactForm.addEventListener("submit", async function (event) {
+                event.preventDefault();
+
+                const name = document.getElementById("contactName").value.trim();
+                const email = document.getElementById("contactEmail").value.trim();
+                const subject = document.getElementById("contactSubject").value;
+                const message = document.getElementById("contactMessage").value.trim();
+
+                if (!name || !email || !subject || !message) {
+                    contactFormMessage.style.color = "#ff7777";
+                    contactFormMessage.textContent = "Please fill in all fields.";
+                    return;
+                }
+
+                const button = contactForm.querySelector("button[type='submit']");
+                button.disabled = true;
+                contactFormMessage.style.color = "#f5b942";
+                contactFormMessage.textContent = "Sending your message...";
+                try {
+                    await SmartDineAPI.request("/users/contact/", {
+                        method: "POST",
+                        body: JSON.stringify({
+                            name: name,
+                            email: email,
+                            subject: subject,
+                            message: message
+                        })
+                    });
+                    contactFormMessage.style.color = "#4ade80";
+                    contactFormMessage.textContent =
+                        "Thank you, " + name + "! Your message has been sent.";
+                    contactForm.reset();
+                } catch (error) {
+                    contactFormMessage.style.color = "#ff7777";
+                    contactFormMessage.textContent = error.message;
+                } finally {
+                    button.disabled = false;
+                }
+            });
+        }
+    </script>
+    <script src="../js/auth-nav.js"></script>
+
+</body>
+</html>

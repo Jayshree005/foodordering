@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from django.db.models import Q
 
 
 class Restaurant(models.Model):
@@ -104,8 +105,53 @@ class FoodItem(models.Model):
 
     is_available = models.BooleanField(default=True)
     is_vegetarian = models.BooleanField(default=False)
+    ingredients = models.TextField(blank=True)
+    allergens = models.JSONField(default=list, blank=True)
+    dietary_tags = models.JSONField(default=list, blank=True)
+    calories = models.PositiveIntegerField(blank=True, null=True)
+    protein_g = models.DecimalField(max_digits=7, decimal_places=2, blank=True, null=True)
+    is_local_specialty = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"{self.name} - {self.restaurant.name}"
+
+
+class RestaurantReview(models.Model):
+    class Sentiment(models.TextChoices):
+        POSITIVE = 'positive', 'Positive'
+        NEUTRAL = 'neutral', 'Neutral'
+        NEGATIVE = 'negative', 'Negative'
+
+    customer = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='restaurant_reviews'
+    )
+    restaurant = models.ForeignKey(
+        Restaurant,
+        on_delete=models.CASCADE,
+        related_name='reviews'
+    )
+    order = models.OneToOneField(
+        'orders.Order',
+        on_delete=models.CASCADE,
+        related_name='review'
+    )
+    rating = models.PositiveSmallIntegerField()
+    comment = models.TextField(blank=True)
+    sentiment = models.CharField(max_length=10, choices=Sentiment.choices)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        constraints = [
+            models.CheckConstraint(
+                condition=Q(rating__gte=1) & Q(rating__lte=5),
+                name='restaurant_review_rating_1_to_5'
+            )
+        ]
+
+    def __str__(self):
+        return f'{self.restaurant.name} review by {self.customer.username}'

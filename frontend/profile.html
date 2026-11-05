@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SmartDine | My Profile</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+
+    <style>
+        .profile-page {
+            min-height: 100vh;
+            padding: 130px 7% 70px;
+        }
+
+        .profile-container {
+            max-width: 950px;
+            margin: auto;
+        }
+
+        .profile-heading {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .profile-heading h1 {
+            color: white;
+            font-size: 34px;
+        }
+
+        .profile-heading p {
+            color: #ccc;
+            margin-top: 10px;
+        }
+
+        .profile-card {
+            background: rgba(0, 0, 0, 0.78);
+            backdrop-filter: blur(18px);
+            border: 1px solid rgba(233, 162, 59, 0.4);
+            border-radius: 18px;
+            padding: 35px;
+        }
+
+        .profile-top {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid rgba(255,255,255,0.12);
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #e9a23b, #d97706);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 40px;
+            color: #111;
+            font-weight: bold;
+        }
+
+        .profile-info h2 {
+            color: white;
+            margin-bottom: 8px;
+        }
+
+        .profile-info p {
+            color: #bbb;
+        }
+
+        .profile-section {
+            margin-top: 30px;
+        }
+
+        .profile-section h3 {
+            color: #e9a23b;
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .profile-field label {
+            display: block;
+            color: #ccc;
+            margin-bottom: 9px;
+        }
+
+        .profile-field input,
+        .profile-field textarea {
+            width: 100%;
+            padding: 13px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.07);
+            color: white;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .profile-field input:focus,
+        .profile-field textarea:focus {
+            border-color: #e9a23b;
+        }
+
+        .profile-field input:disabled,
+        .profile-field textarea:disabled {
+            opacity: 0.75;
+            cursor: not-allowed;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .profile-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .profile-actions button,
+        .profile-actions a {
+            padding: 13px 24px;
+            border-radius: 8px;
+            font-weight: bold;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            text-align: center;
+        }
+
+        .edit-btn {
+            background: linear-gradient(135deg, #e9a23b, #d97706);
+            color: #111;
+        }
+
+        .cancel-btn {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        .orders-btn {
+            border: 1px solid #e9a23b !important;
+            color: #e9a23b;
+            background: transparent;
+        }
+
+        .profile-message {
+            color: #4caf50;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .profile-shortcuts {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .shortcut-card {
+            padding: 22px;
+            background: rgba(0,0,0,0.7);
+            border: 1px solid rgba(233,162,59,0.3);
+            border-radius: 12px;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .shortcut-card:hover {
+            transform: translateY(-5px);
+            border-color: #e9a23b;
+        }
+
+        .shortcut-card h3 {
+            color: #e9a23b;
+            margin-bottom: 8px;
+        }
+
+        .shortcut-card p {
+            color: #ccc;
+            font-size: 14px;
+        }
+
+        @media(max-width: 600px) {
+
+            .profile-page {
+                padding: 110px 5% 50px;
+            }
+
+            .profile-card {
+                padding: 22px 16px;
+            }
+
+            .profile-top {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .profile-grid,
+            .profile-shortcuts {
+                grid-template-columns: 1fr;
+            }
+
+            .profile-heading h1 {
+                font-size: 27px;
+            }
+
+            .profile-actions {
+                flex-direction: column;
+            }
+
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="background-overlay"></div>
+
+    <!-- NAVBAR -->
+
+    <header class="navbar">
+
+        <a href="index.html" class="logo">
+            <img src="../assets/images/WhatsApp Image 2026-11-04 at 8.51.29 PM (1).jpeg"
+                 alt="SmartDine Logo">
+        </a>
+
+        <nav class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="restaurants.html">Restaurants</a>
+            <a href="my-orders.html">My Orders</a>
+        </nav>
+
+        <div class="nav-actions">
+            <a href="login.html" class="login-btn">Login</a>
+            <a href="signup.html" class="signup-btn">Sign Up</a>
+        </div>
+
+    </header>
+
+    <!-- PROFILE PAGE -->
+
+    <main class="profile-page">
+
+        <div class="profile-container">
+
+            <div class="profile-heading">
+                <h1>My Profile</h1>
+                <p>Manage your personal information and delivery details.</p>
+            </div>
+
+            <div class="profile-card">
+
+                <div class="profile-top">
+
+                    <div class="profile-avatar">U</div>
+
+                    <div class="profile-info">
+                        <h2 id="displayName">Your Name</h2>
+                        <p id="displayEmail">your@email.com</p>
+                    </div>
+
+                </div>
+
+                <!-- PERSONAL DETAILS -->
+
+                <section class="profile-section">
+
+                    <h3>Personal Information</h3>
+
+                    <form id="profileForm">
+
+                        <div class="profile-grid">
+
+                            <div class="profile-field">
+                                <label>Full Name</label>
+                                <input type="text" id="profileName"
+                                       placeholder="Enter your name" disabled>
+                            </div>
+
+                            <div class="profile-field">
+                                <label>Email Address</label>
+                                <input type="email" id="profileEmail"
+                                       placeholder="Enter your email" disabled>
+                            </div>
+
+                            <div class="profile-field">
+                                <label>Mobile Number</label>
+                                <input type="tel" id="profilePhone"
+                                       placeholder="Enter mobile number" disabled>
+                            </div>
+
+                            <div class="profile-field">
+                                <label>Pincode</label>
+                                <input type="text" id="profilePincode"
+                                       placeholder="Enter pincode" disabled>
+                            </div>
+
+                            <div class="profile-field full-width">
+                                <label>Delivery Address</label>
+                                <textarea id="profileAddress"
+                                          rows="3"
+                                          placeholder="Enter your address"
+                                          disabled></textarea>
+                            </div>
+
+                            <div class="profile-field full-width">
+                                <label for="profileDiet">Dietary preferences (comma-separated)</label>
+                                <input type="text" id="profileDiet"
+                                       placeholder="vegetarian, vegan, low_calorie"
+                                       disabled>
+                            </div>
+
+                            <div class="profile-field full-width">
+                                <label for="profileAllergies">Allergies (comma-separated)</label>
+                                <input type="text" id="profileAllergies"
+                                       placeholder="peanuts, shellfish"
+                                       disabled>
+                                <small>Menu allergy information may be incomplete. Always confirm directly with the restaurant.</small>
+                            </div>
+
+                            <div class="profile-field">
+                                <label for="profileTouristCity">City for local food suggestions</label>
+                                <input type="text" id="profileTouristCity"
+                                       placeholder="e.g. Delhi"
+                                       disabled>
+                            </div>
+
+                        </div>
+
+                        <div class="profile-actions">
+
+                            <button type="button" class="edit-btn"
+                                    id="editProfileBtn">
+                                Edit Profile
+                            </button>
+
+                            <button type="submit" class="edit-btn"
+                                    id="saveProfileBtn" hidden>
+                                Save Changes
+                            </button>
+
+                            <button type="button" class="cancel-btn"
+                                    id="cancelProfileBtn" hidden>
+                                Cancel
+                            </button>
+
+                            <a href="my-orders.html" class="orders-btn">
+                                My Orders
+                            </a>
+
+                        </div>
+
+                        <p class="profile-message" id="profileMessage">
+                            Profile updated successfully!
+                        </p>
+
+                    </form>
+
+                </section>
+
+            </div>
+
+            <!-- QUICK LINKS -->
+
+            <div class="profile-shortcuts">
+
+                <a href="my-orders.html" class="shortcut-card">
+                    <h3>📦 My Orders</h3>
+                    <p>View your previous and current orders.</p>
+                </a>
+
+                <a href="restaurants.html" class="shortcut-card">
+                    <h3>🍽️ Explore Restaurants</h3>
+                    <p>Discover restaurants and order your favourite food.</p>
+                </a>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+
+    <footer>
+        <div class="footer-bottom">
+            <p>© 2026 SmartDine. All Rights Reserved.</p>
+            <p>Good Food. Good Mood. ❤️</p>
+        </div>
+    </footer>
+
+    <script src="../js/app.js"></script>
+    <script src="../js/api.js"></script>
+    <script>
+        (async function () {
+            const form = document.getElementById("profileForm");
+            const message = document.getElementById("profileMessage");
+            const fields = [
+                "profileName", "profilePhone", "profilePincode", "profileAddress",
+                "profileDiet", "profileAllergies", "profileTouristCity"
+            ];
+            const editButton = document.getElementById("editProfileBtn");
+            const saveButton = document.getElementById("saveProfileBtn");
+            const cancelButton = document.getElementById("cancelProfileBtn");
+            let originalUser;
+
+            if (!localStorage.getItem("smartdineToken")) {
+                window.location.href = "login.html?next=profile.html";
+                return;
+            }
+
+            function setEditing(editing) {
+                fields.forEach(id => document.getElementById(id).disabled = !editing);
+                editButton.hidden = editing;
+                saveButton.hidden = !editing;
+                cancelButton.hidden = !editing;
+            }
+
+            try {
+                originalUser = await SmartDineAPI.request("/users/profile/");
+                localStorage.setItem("smartdineUser", JSON.stringify(originalUser));
+                const fullName = [originalUser.first_name, originalUser.last_name].filter(Boolean).join(" ");
+                document.getElementById("displayName").textContent = fullName || originalUser.username;
+                document.getElementById("displayEmail").textContent = originalUser.email;
+                document.getElementById("profileName").value = fullName;
+                document.getElementById("profileEmail").value = originalUser.email;
+                document.getElementById("profilePhone").value = originalUser.phone_number || "";
+                document.getElementById("profilePincode").value = originalUser.postal_code || "";
+                document.getElementById("profileAddress").value = originalUser.delivery_address || "";
+                document.getElementById("profileDiet").value =
+                    (originalUser.dietary_preferences || []).join(", ");
+                document.getElementById("profileAllergies").value =
+                    (originalUser.allergies || []).join(", ");
+                document.getElementById("profileTouristCity").value =
+                    originalUser.tourist_city || "";
+            } catch (error) {
+                message.style.display = "block";
+                message.style.color = "#ff6b6b";
+                message.textContent = "Unable to load your profile: " + error.message;
+                return;
+            }
+
+            editButton.addEventListener("click", () => setEditing(true));
+            cancelButton.addEventListener("click", () => {
+                const fullName = [originalUser.first_name, originalUser.last_name].filter(Boolean).join(" ");
+                document.getElementById("profileName").value = fullName;
+                document.getElementById("profilePhone").value = originalUser.phone_number || "";
+                document.getElementById("profilePincode").value = originalUser.postal_code || "";
+                document.getElementById("profileAddress").value = originalUser.delivery_address || "";
+                document.getElementById("profileDiet").value =
+                    (originalUser.dietary_preferences || []).join(", ");
+                document.getElementById("profileAllergies").value =
+                    (originalUser.allergies || []).join(", ");
+                document.getElementById("profileTouristCity").value =
+                    originalUser.tourist_city || "";
+                setEditing(false);
+            });
+
+            form.addEventListener("submit", async event => {
+                event.preventDefault();
+                const parts = document.getElementById("profileName").value.trim().split(/\s+/);
+                const updated = {
+                    first_name: parts.shift() || "",
+                    last_name: parts.join(" "),
+                    phone_number: document.getElementById("profilePhone").value.trim(),
+                    delivery_address: document.getElementById("profileAddress").value.trim(),
+                    postal_code: document.getElementById("profilePincode").value.trim(),
+                    dietary_preferences: document.getElementById("profileDiet").value
+                        .split(",").map(value => value.trim().toLowerCase()).filter(Boolean),
+                    allergies: document.getElementById("profileAllergies").value
+                        .split(",").map(value => value.trim().toLowerCase()).filter(Boolean),
+                    tourist_city: document.getElementById("profileTouristCity").value.trim()
+                };
+                saveButton.disabled = true;
+                message.style.display = "block";
+                message.style.color = "#e9a23b";
+                message.textContent = "Saving profile...";
+
+                try {
+                    originalUser = await SmartDineAPI.request("/users/profile/", {
+                        method: "PATCH",
+                        body: JSON.stringify(updated)
+                    });
+                    localStorage.setItem("smartdineUser", JSON.stringify(originalUser));
+                    const displayName = [originalUser.first_name, originalUser.last_name].filter(Boolean).join(" ") || originalUser.username;
+                    document.getElementById("displayName").textContent = displayName;
+                    message.style.color = "#4caf50";
+                    message.textContent = "Profile updated successfully.";
+                    setEditing(false);
+                } catch (error) {
+                    message.style.color = "#ff6b6b";
+                    message.textContent = "Unable to save profile: " + error.message;
+                } finally {
+                    saveButton.disabled = false;
+                }
+            });
+        })();
+    </script>
+    <script src="../js/auth-nav.js"></script>
+
+</body>
+</html>

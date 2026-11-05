@@ -1,0 +1,792 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SmartDine AI | Analytics</title>
+
+    <link rel="stylesheet" href="../../css/admin-dashboard.css">
+
+    <style>
+        .analytics-content {
+            padding: 25px;
+        }
+
+        .page-heading {
+            margin-bottom: 25px;
+        }
+
+        .page-heading h1 {
+            color: #edb94f;
+            font-size: 28px;
+            margin-bottom: 7px;
+        }
+
+        .page-heading p {
+            color: #e0d7ca;
+        }
+
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .analytics-card,
+        .chart-card,
+        .popular-card {
+            background: rgba(20, 15, 12, 0.78);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(237, 185, 79, 0.2);
+            border-radius: 16px;
+            padding: 22px;
+            color: #fff;
+        }
+
+        .analytics-card h3 {
+            color: #e0d7ca;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 14px;
+        }
+
+        .analytics-card h2 {
+            color: #edb94f;
+            font-size: 27px;
+            margin-bottom: 8px;
+        }
+
+        .analytics-card span {
+            color: #a9d5a1;
+            font-size: 12px;
+        }
+
+        .analytics-middle {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            color: #edb94f;
+            font-size: 19px;
+            margin-bottom: 22px;
+        }
+
+        .chart {
+            height: 235px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            gap: 12px;
+            padding-top: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .bar-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100%;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+
+        .bar {
+            width: 65%;
+            max-width: 45px;
+            min-height: 10px;
+            background: linear-gradient(to top, #b96b22, #edb94f);
+            border-radius: 7px 7px 0 0;
+            transition: 0.3s;
+        }
+
+        .bar:hover {
+            filter: brightness(1.3);
+            transform: scaleX(1.08);
+        }
+
+        .bar-item small {
+            color: #e0d7ca;
+            font-size: 11px;
+        }
+
+        .bar-item .amount {
+            color: #edb94f;
+            font-size: 10px;
+        }
+
+        .status-item {
+            margin-bottom: 22px;
+        }
+
+        .status-info {
+            display: flex;
+            justify-content: space-between;
+            color: #e0d7ca;
+            font-size: 13px;
+            margin-bottom: 9px;
+        }
+
+        .progress {
+            width: 100%;
+            height: 9px;
+            background: rgba(255,255,255,0.12);
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 20px;
+        }
+
+        .pending { background: #e8a83e; }
+        .delivered { background: #70b879; }
+        .cancelled { background: #d86c61; }
+        .preparing { background: #669bd5; }
+
+        .analytics-bottom {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .popular-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            gap: 10px;
+        }
+
+        .popular-row[hidden] {
+            display: none;
+        }
+
+        .popular-row:last-child {
+            border-bottom: none;
+        }
+
+        .popular-row h4 {
+            color: #fff;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .popular-row p {
+            color: #b9afa2;
+            font-size: 12px;
+        }
+
+        .popular-row strong {
+            color: #edb94f;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        .rank {
+            color: #edb94f;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .demo-note {
+            color: #c4b9aa;
+            font-size: 12px;
+            margin-top: 18px;
+            text-align: right;
+        }
+
+        @media (max-width: 1000px) {
+            .analytics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .analytics-middle,
+            .analytics-bottom {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .analytics-content {
+                padding: 15px;
+            }
+
+            .analytics-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+
+            .analytics-card {
+                padding: 15px;
+            }
+
+            .analytics-card h2 {
+                font-size: 21px;
+            }
+
+            .chart-card,
+            .popular-card {
+                padding: 16px;
+            }
+
+            .chart {
+                gap: 5px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="admin-layout">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar" id="sidebar">
+
+            <div class="sidebar-logo">
+                <img
+                    src="../../assets/images/WhatsApp Image 2026-11-04 at 8.51.29 PM (1).jpeg"
+                    alt="SmartDine Logo"
+                >
+                <h2>SmartDine AI</h2>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="dashboard.html">Dashboard</a>
+                <a href="restaurants-management.html">Restaurants</a>
+                <a href="users-management.html">Users</a>
+                <a href="orders-management.html">Orders</a>
+                <a href="analytics.html" class="active">Analytics</a>
+            </nav>
+
+            <div class="sidebar-bottom">
+                <a href="../index.html">Back to Website</a>
+            </div>
+
+        </aside>
+
+
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+
+            <!-- TOPBAR -->
+            <header class="topbar">
+                <button class="menu-toggle" id="menuToggle">☰</button>
+
+                <h2>Analytics Dashboard</h2>
+
+                <div class="admin-profile">
+                    <span>Admin</span>
+                </div>
+            </header>
+
+
+            <section class="analytics-content">
+
+                <div class="page-heading">
+                    <h1>Business Analytics</h1>
+                    <p>Monitor your restaurant platform's performance.</p>
+                </div>
+
+
+                <!-- STATISTICS -->
+                <div class="analytics-grid">
+
+                    <div class="analytics-card">
+                        <h3>Total Revenue</h3>
+                        <h2>₹0</h2>
+                        <span>Live data</span>
+                    </div>
+
+                    <div class="analytics-card">
+                        <h3>Total Orders</h3>
+                        <h2>0</h2>
+                        <span>Live data</span>
+                    </div>
+
+                    <div class="analytics-card">
+                        <h3>Total Restaurants</h3>
+                        <h2>0</h2>
+                        <span>Active restaurants</span>
+                    </div>
+
+                    <div class="analytics-card">
+                        <h3>Total Users</h3>
+                        <h2>0</h2>
+                        <span>Registered customers</span>
+                    </div>
+
+                    <div class="analytics-card">
+                        <h3>Average Review Rating</h3>
+                        <h2>—</h2>
+                        <span id="reviewSentimentSummary">No reviews yet</span>
+                    </div>
+
+                    <div class="analytics-card">
+                        <h3>Total Reviews</h3>
+                        <h2>0</h2>
+                        <span>Rule-based review summary</span>
+                    </div>
+
+                </div>
+
+
+                <!-- REVENUE CHART + ORDER STATUS -->
+                <div class="analytics-middle">
+
+                    <div class="chart-card">
+
+                        <h3 class="section-title">Monthly Revenue</h3>
+
+                        <div class="chart">
+
+                            <div class="bar-item">
+                                <span class="amount">₹0</span>
+                                <div class="bar" style="height:0%"></div>
+                                <small>Jan</small>
+                            </div>
+
+                            <div class="bar-item">
+                                <span class="amount">₹0</span>
+                                <div class="bar" style="height:0%"></div>
+                                <small>Feb</small>
+                            </div>
+
+                            <div class="bar-item">
+                                <span class="amount">₹0</span>
+                                <div class="bar" style="height:0%"></div>
+                                <small>Mar</small>
+                            </div>
+
+                            <div class="bar-item">
+                                <span class="amount">₹0</span>
+                                <div class="bar" style="height:0%"></div>
+                                <small>Apr</small>
+                            </div>
+
+                            <div class="bar-item">
+                                <span class="amount">₹0</span>
+                                <div class="bar" style="height:0%"></div>
+                                <small>May</small>
+                            </div>
+
+                            <div class="bar-item">
+                                <span class="amount">₹0</span>
+                                <div class="bar" style="height:0%"></div>
+                                <small>Jun</small>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ORDER STATUS -->
+                    <div class="chart-card">
+
+                        <h3 class="section-title">Order Status Overview</h3>
+
+                        <div class="status-item">
+                            <div class="status-info">
+                                <span>Delivered</span>
+                                <strong>0%</strong>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-fill delivered"
+                                     style="width:0%"></div>
+                            </div>
+                        </div>
+
+                        <div class="status-item">
+                            <div class="status-info">
+                                <span>Pending</span>
+                                <strong>0%</strong>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-fill pending"
+                                     style="width:0%"></div>
+                            </div>
+                        </div>
+
+                        <div class="status-item">
+                            <div class="status-info">
+                                <span>Preparing</span>
+                                <strong>0%</strong>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-fill preparing"
+                                     style="width:0%"></div>
+                            </div>
+                        </div>
+
+                        <div class="status-item">
+                            <div class="status-info">
+                                <span>Cancelled</span>
+                                <strong>0%</strong>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-fill cancelled"
+                                     style="width:0%"></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- POPULAR RESTAURANTS + DISHES -->
+                <div class="analytics-bottom">
+
+                    <div class="popular-card">
+
+                        <h3 class="section-title">Popular Restaurants</h3>
+
+                        <div class="popular-row" hidden>
+                            <div>
+                                <h4><span class="rank">#1</span>Food Paradise</h4>
+                                <p>Delhi</p>
+                            </div>
+                            <strong>850 Orders</strong>
+                        </div>
+
+                        <div class="popular-row" hidden>
+                            <div>
+                                <h4><span class="rank">#2</span>The Spice House</h4>
+                                <p>Noida</p>
+                            </div>
+                            <strong>720 Orders</strong>
+                        </div>
+
+                        <div class="popular-row" hidden>
+                            <div>
+                                <h4><span class="rank">#3</span>Burger Hub</h4>
+                                <p>Gurgaon</p>
+                            </div>
+                            <strong>560 Orders</strong>
+                        </div>
+
+                        <div class="popular-row" hidden>
+                            <div>
+                                <h4><span class="rank">#4</span>Italian Bistro</h4>
+                                <p>Delhi</p>
+                            </div>
+                            <strong>430 Orders</strong>
+                        </div>
+
+                    </div>
+
+
+                    <div class="popular-card">
+
+                        <h3 class="section-title">Popular Dishes</h3>
+
+                        <div class="popular-row" hidden>
+                            <div>
+                                <h4><span class="rank">#1</span>Paneer Tikka</h4>
+                                <p>Food Paradise</p>
+                            </div>
+                            <strong>420 Sold</strong>
+                        </div>
+
+                        <div class="popular-row" hidden>
+                            <div>
+                                <h4><span class="rank">#2</span>Cheese Burger</h4>
+                                <p>Burger Hub</p>
+                            </div>
+                            <strong>380 Sold</strong>
+                        </div>
+
+                        <div class="popular-row" hidden>
+                            <div>
+                                <h4><span class="rank">#3</span>Italian Pizza</h4>
+                                <p>Italian Bistro</p>
+                            </div>
+                            <strong>310 Sold</strong>
+                        </div>
+
+                        <div class="popular-row" hidden>
+                            <div>
+                                <h4><span class="rank">#4</span>Veg Biryani</h4>
+                                <p>The Spice House</p>
+                            </div>
+                            <strong>275 Sold</strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="chart-card" style="margin-top:24px;">
+                    <h3 class="section-title">Demand Forecast</h3>
+                    <p class="demo-note">
+                        Order-based baseline estimate, not a trained AI model.
+                    </p>
+                    <div id="demandForecast" class="popular-row"></div>
+                </div>
+
+                <div class="chart-card" style="margin-top:24px;">
+                    <h3 class="section-title">Food Waste Forecast</h3>
+                    <p class="demo-note">
+                        Based on production logs. Record prepared and wasted quantities to get estimates.
+                    </p>
+                    <div id="wasteForecast" class="popular-row"></div>
+                    <form id="productionForm" class="analytics-grid">
+                        <label>Restaurant
+                            <select id="productionRestaurant" required></select>
+                        </label>
+                        <label>Food item
+                            <select id="productionFood" required></select>
+                        </label>
+                        <label>Date
+                            <input id="productionDate" type="date" required>
+                        </label>
+                        <label>Quantity prepared
+                            <input id="preparedQuantity" type="number" min="0" required>
+                        </label>
+                        <label>Quantity sold
+                            <input id="soldQuantity" type="number" min="0" required>
+                        </label>
+                        <label>Quantity wasted
+                            <input id="wastedQuantity" type="number" min="0" required>
+                        </label>
+                        <button type="submit">Save production log</button>
+                    </form>
+                    <p class="demo-note" id="productionMessage" aria-live="polite"></p>
+                </div>
+
+                <p class="demo-note" id="analyticsMessage">Loading live analytics...</p>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <!-- MOBILE SIDEBAR SCRIPT -->
+    <script>
+        const menuToggle = document.getElementById("menuToggle");
+        const sidebar = document.getElementById("sidebar");
+
+        if (menuToggle && sidebar) {
+            menuToggle.addEventListener("click", () => {
+                sidebar.classList.toggle("active");
+            });
+        }
+    </script>
+    <script src="../../js/admin-api.js"></script>
+    <script>
+        (async function () {
+            if (!await SmartDineAdminAPI.requireAdmin()) return;
+            const message = document.getElementById("analyticsMessage");
+            try {
+                const [overview, orderData] = await Promise.all([
+                    SmartDineAdminAPI.request("/users/admin/overview/"),
+                    SmartDineAdminAPI.request("/orders/admin/")
+                ]);
+                const stats = [
+                    "₹" + Number(overview.revenue).toLocaleString("en-IN"),
+                    Number(overview.total_orders).toLocaleString("en-IN"),
+                    Number(overview.total_restaurants).toLocaleString("en-IN"),
+                    Number(overview.total_users).toLocaleString("en-IN"),
+                    overview.average_rating === null
+                        ? "—" : Number(overview.average_rating).toFixed(1) + " / 5",
+                    Number(overview.total_reviews).toLocaleString("en-IN")
+                ];
+                document.querySelectorAll(".analytics-card h2").forEach((element, index) => {
+                    element.textContent = stats[index];
+                });
+                const sentiments = overview.review_sentiment_counts || {};
+                document.getElementById("reviewSentimentSummary").textContent =
+                    "Positive " + (sentiments.positive || 0) +
+                    " · Neutral " + (sentiments.neutral || 0) +
+                    " · Negative " + (sentiments.negative || 0);
+
+                const orders = orderData.orders || [];
+                const months = [];
+                for (let offset = 5; offset >= 0; offset--) {
+                    const date = new Date();
+                    date.setDate(1);
+                    date.setMonth(date.getMonth() - offset);
+                    months.push({
+                        year: date.getFullYear(),
+                        month: date.getMonth(),
+                        label: date.toLocaleString(undefined, { month: "short" }),
+                        total: 0
+                    });
+                }
+                orders.forEach(order => {
+                    if (order.status === "cancelled") return;
+                    const date = new Date(order.created_at);
+                    const month = months.find(item =>
+                        item.year === date.getFullYear() && item.month === date.getMonth()
+                    );
+                    if (month) month.total += Number(order.total_amount);
+                });
+                const maxRevenue = Math.max(1, ...months.map(item => item.total));
+                document.querySelectorAll(".bar-item").forEach((item, index) => {
+                    const month = months[index];
+                    if (!month) return;
+                    item.querySelector(".amount").textContent =
+                        "₹" + month.total.toLocaleString("en-IN");
+                    item.querySelector(".bar").style.height =
+                        Math.max(3, month.total / maxRevenue * 100) + "%";
+                    item.querySelector("small").textContent = month.label;
+                });
+
+                const statuses = ["delivered", "pending", "preparing", "cancelled"];
+                document.querySelectorAll(".status-item").forEach((item, index) => {
+                    const total = orders.length;
+                    const count = overview.status_counts[statuses[index]] || 0;
+                    const percent = total ? Math.round(count / total * 100) : 0;
+                    item.querySelector(".status-info span").textContent =
+                        statuses[index].replace(/_/g, " ");
+                    item.querySelector(".status-info strong").textContent = percent + "%";
+                    item.querySelector(".progress-fill").style.width = percent + "%";
+                });
+
+                const restaurantCounts = new Map();
+                const foodCounts = new Map();
+                orders.forEach(order => {
+                    const restaurant = restaurantCounts.get(order.restaurant_name) || {
+                        count: 0,
+                        city: ""
+                    };
+                    restaurant.count += 1;
+                    restaurantCounts.set(order.restaurant_name, restaurant);
+                    (order.items || []).forEach(item => {
+                        const dish = foodCounts.get(item.food_name) || { count: 0, restaurant: order.restaurant_name };
+                        dish.count += Number(item.quantity);
+                        foodCounts.set(item.food_name, dish);
+                    });
+                });
+                [
+                    Array.from(restaurantCounts, ([name, info]) => ({ name, count: info.count })),
+                    Array.from(foodCounts, ([name, info]) => ({ name, count: info.count, restaurant: info.restaurant }))
+                ].forEach((entries, groupIndex) => {
+                    const rows = document.querySelectorAll(".popular-card")[groupIndex].querySelectorAll(".popular-row");
+                    entries.sort((a, b) => b.count - a.count);
+                    rows.forEach((row, index) => {
+                        const entry = entries[index];
+                        if (!entry) {
+                            row.hidden = true;
+                            return;
+                        }
+                        row.hidden = false;
+                        row.querySelector("h4").textContent = "#" + (index + 1) + " " + entry.name;
+                        row.querySelector("p").textContent = entry.restaurant || "All locations";
+                        row.querySelector("strong").textContent = entry.count +
+                            (groupIndex ? " Sold" : " Orders");
+                    });
+                });
+                message.textContent = "Analytics calculated from saved orders.";
+            } catch (error) {
+                message.textContent = "Unable to load analytics: " + error.message;
+            }
+
+            async function loadForecasts() {
+                const demand = await SmartDineAdminAPI.request(
+                    "/recommendations/admin/demand-forecast/"
+                );
+                const waste = await SmartDineAdminAPI.request(
+                    "/recommendations/admin/waste-forecast/"
+                );
+                const demandContainer = document.getElementById("demandForecast");
+                const wasteContainer = document.getElementById("wasteForecast");
+                demandContainer.textContent = demand.forecasts.length
+                    ? demand.forecasts.slice(0, 8).map(item =>
+                        item.food_name + " (" + item.restaurant_name + "): about " +
+                        item.estimated_quantity_next_7_days + " portions next week"
+                    ).join(" · ")
+                    : "No available menu items to forecast.";
+                wasteContainer.textContent = waste.forecasts.length
+                    ? waste.forecasts.slice(0, 8).map(item =>
+                        item.food_name + " (" + item.restaurant_name + "): " +
+                        item.waste_rate_percent + "% recorded waste"
+                    ).join(" · ")
+                    : "No production logs yet; record daily quantities below to build a baseline.";
+            }
+
+            async function loadProductionRestaurants() {
+                const restaurantSelect = document.getElementById("productionRestaurant");
+                const data = await SmartDineAdminAPI.request("/restaurants/manage/");
+                restaurantSelect.replaceChildren();
+                data.restaurants.filter(item => item.is_active).forEach(item => {
+                    const option = document.createElement("option");
+                    option.value = item.id;
+                    option.textContent = item.name + " — " + item.city;
+                    restaurantSelect.appendChild(option);
+                });
+                await loadProductionFoods();
+            }
+
+            async function loadProductionFoods() {
+                const restaurantId = document.getElementById("productionRestaurant").value;
+                const foodSelect = document.getElementById("productionFood");
+                foodSelect.replaceChildren();
+                if (!restaurantId) return;
+                const data = await SmartDineAdminAPI.request(
+                    "/restaurants/" + restaurantId + "/food-items/"
+                );
+                data.food_items.forEach(item => {
+                    const option = document.createElement("option");
+                    option.value = item.id;
+                    option.textContent = item.name;
+                    foodSelect.appendChild(option);
+                });
+            }
+
+            const productionDate = document.getElementById("productionDate");
+            const today = new Date();
+            productionDate.value = [
+                today.getFullYear(),
+                String(today.getMonth() + 1).padStart(2, "0"),
+                String(today.getDate()).padStart(2, "0")
+            ].join("-");
+            productionDate.max = productionDate.value;
+            document.getElementById("productionRestaurant").addEventListener(
+                "change", loadProductionFoods
+            );
+            document.getElementById("productionForm").addEventListener("submit", async event => {
+                event.preventDefault();
+                const note = document.getElementById("productionMessage");
+                try {
+                    await SmartDineAdminAPI.request("/recommendations/admin/production-logs/", {
+                        method: "POST",
+                        body: JSON.stringify({
+                            restaurant_id: document.getElementById("productionRestaurant").value,
+                            food_item_id: document.getElementById("productionFood").value,
+                            date: productionDate.value,
+                            prepared_quantity: Number(document.getElementById("preparedQuantity").value),
+                            sold_quantity: Number(document.getElementById("soldQuantity").value),
+                            wasted_quantity: Number(document.getElementById("wastedQuantity").value)
+                        })
+                    });
+                    note.textContent = "Production log saved.";
+                    await loadForecasts();
+                } catch (error) {
+                    note.textContent = "Unable to save production log: " + error.message;
+                }
+            });
+            try {
+                await Promise.all([loadForecasts(), loadProductionRestaurants()]);
+            } catch (error) {
+                document.getElementById("productionMessage").textContent =
+                    "Forecast data unavailable: " + error.message;
+            }
+        })();
+    </script>
+
+</body>
+</html>

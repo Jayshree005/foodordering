@@ -16,6 +16,11 @@ class CartItemSerializer(serializers.ModelSerializer):
         read_only=True
     )
 
+    image = serializers.ImageField(
+        source='food_item.image',
+        read_only=True
+    )
+
     item_total = serializers.SerializerMethodField()
 
     class Meta:
@@ -25,7 +30,9 @@ class CartItemSerializer(serializers.ModelSerializer):
             'food_item',
             'food_name',
             'price',
+            'image',
             'quantity',
+            'customizations',
             'item_total'
         ]
 
@@ -71,6 +78,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
             'food_item',
             'food_name',
             'quantity',
+            'customizations',
             'price',
             'subtotal'
         ]
@@ -79,6 +87,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
 # Order Serializer
 class OrderSerializer(serializers.ModelSerializer):
     items = OrderItemSerializer(many=True, read_only=True)
+    customer_name = serializers.CharField(source='customer.username', read_only=True)
 
     restaurant_name = serializers.CharField(
         source='restaurant.name',
@@ -92,6 +101,7 @@ class OrderSerializer(serializers.ModelSerializer):
             'order_number',
             'restaurant',
             'restaurant_name',
+            'customer_name',
             'delivery_address',
             'status',
             'payment_status',

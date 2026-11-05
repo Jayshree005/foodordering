@@ -1,0 +1,716 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SmartDine AI | Orders Management</title>
+
+    <link rel="stylesheet" href="../../css/admin-dashboard.css">
+
+    <style>
+        .page-header {
+            margin-bottom: 25px;
+        }
+
+        .page-header p {
+            color: #e0d7ca;
+            margin-top: 8px;
+        }
+
+        .order-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .order-stat {
+            background: rgba(35, 24, 15, 0.85);
+            border: 1px solid rgba(255, 207, 126, 0.2);
+            border-radius: 12px;
+            padding: 22px;
+        }
+
+        .order-stat h3 {
+            color: #e0d7ca;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .order-stat h2 {
+            color: #edb94f;
+            font-size: 28px;
+        }
+
+        .order-tools {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 22px;
+            flex-wrap: wrap;
+        }
+
+        .order-tools input,
+        .order-tools select {
+            flex: 1;
+            min-width: 200px;
+            padding: 13px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 207, 126, 0.25);
+            background: rgba(20, 15, 11, 0.85);
+            color: white;
+            outline: none;
+        }
+
+        .orders-table {
+            background: rgba(35, 24, 15, 0.85);
+            border: 1px solid rgba(255, 207, 126, 0.2);
+            border-radius: 14px;
+            padding: 22px;
+            overflow-x: auto;
+        }
+
+        .orders-table h2 {
+            color: #edb94f;
+            margin-bottom: 20px;
+        }
+
+        .orders-table table {
+            width: 100%;
+            min-width: 950px;
+            border-collapse: collapse;
+        }
+
+        .orders-table th,
+        .orders-table td {
+            padding: 15px;
+            text-align: left;
+            color: #e0d7ca;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .orders-table th {
+            color: #edb94f;
+        }
+
+        .status-badge {
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .pending {
+            background: rgba(237,185,79,0.15);
+            color: #edb94f;
+        }
+
+        .confirmed {
+            background: rgba(70,130,220,0.2);
+            color: #9bc5ff;
+        }
+
+        .preparing {
+            background: rgba(220,139,50,0.2);
+            color: #ffbd75;
+        }
+
+        .out-for-delivery {
+            background: rgba(130,100,220,0.2);
+            color: #c5b3ff;
+        }
+
+        .delivered {
+            background: rgba(46,160,67,0.2);
+            color: #8ee09d;
+        }
+
+        .cancelled {
+            background: rgba(220,80,70,0.2);
+            color: #ff9990;
+        }
+
+        .action-btn {
+            padding: 7px 10px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 2px;
+        }
+
+        .view-btn {
+            background: #edb94f;
+            color: #21170d;
+        }
+
+        .delete-btn {
+            background: #b94336;
+            color: white;
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: 20px;
+            color: #e0d7ca;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 15px;
+        }
+
+        .modal-content {
+            background: #24190f;
+            border: 1px solid rgba(255,207,126,0.3);
+            border-radius: 14px;
+            padding: 25px;
+            width: 100%;
+            max-width: 480px;
+        }
+
+        .modal-content h2 {
+            color: #edb94f;
+            margin-bottom: 20px;
+        }
+
+        .modal-content p {
+            color: #e0d7ca;
+            margin-bottom: 13px;
+        }
+
+        .modal-content select {
+            width: 100%;
+            padding: 12px;
+            margin: 12px 0;
+            border-radius: 7px;
+            border: 1px solid rgba(255,207,126,0.3);
+            background: #160f0a;
+            color: white;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .save-btn,
+        .close-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .save-btn {
+            background: #edb94f;
+            color: #21170d;
+            font-weight: bold;
+        }
+
+        .close-btn {
+            background: #555;
+            color: white;
+        }
+
+        @media(max-width:600px) {
+            .order-tools input,
+            .order-tools select {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="admin-layout">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+
+            <div class="logo">
+                <img src="../../assets/images/WhatsApp Image 2026-11-04 at 8.51.29 PM (1).jpeg"
+                    alt="SmartDine Logo">
+                <h2>SmartDine AI</h2>
+            </div>
+
+            <p class="admin-label">ADMIN MENU</p>
+
+            <nav>
+                <a href="dashboard.html">📊 Dashboard</a>
+                <a href="restaurants-management.html">🏬 Restaurants</a>
+                <a href="users-management.html">👥 Users</a>
+                <a href="orders-management.html" class="active">📦 Orders</a>
+                <a href="analytics.html">📈 Analytics</a>
+                <a href="../index.html">↩ Back to Website</a>
+            </nav>
+
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+
+            <header class="topbar">
+
+                <button class="menu-toggle" id="menuToggle">☰</button>
+
+                <div>
+                    <h1>Orders Management</h1>
+                    <p>Manage and track all customer orders.</p>
+                </div>
+
+                <div class="admin-profile">
+                    <div class="admin-avatar">A</div>
+                    <div>
+                        <strong>Admin</strong>
+                        <p>Administrator</p>
+                    </div>
+                </div>
+
+            </header>
+
+            <!-- PAGE HEADER -->
+            <section class="page-header">
+                <h2 class="section-title">Orders Overview</h2>
+                <p>Monitor restaurant orders and update their status.</p>
+            </section>
+
+            <!-- ORDER STATS -->
+            <section class="order-stats">
+
+                <div class="order-stat">
+                    <h3>Total Orders</h3>
+                    <h2 id="totalOrders">0</h2>
+                </div>
+
+                <div class="order-stat">
+                    <h3>Pending Orders</h3>
+                    <h2 id="pendingOrders">0</h2>
+                </div>
+
+                <div class="order-stat">
+                    <h3>Preparing Orders</h3>
+                    <h2 id="preparingOrders">0</h2>
+                </div>
+
+                <div class="order-stat">
+                    <h3>Delivered Orders</h3>
+                    <h2 id="deliveredOrders">0</h2>
+                </div>
+
+            </section>
+
+            <!-- SEARCH AND FILTER -->
+            <div class="order-tools">
+
+                <input type="text" id="searchOrder"
+                    placeholder="Search Order ID or Customer Name...">
+
+                <select id="statusFilter">
+                    <option value="All">All Orders</option>
+                    <option value="pending">Pending</option>
+                    <option value="confirmed">Confirmed</option>
+                    <option value="preparing">Preparing</option>
+                    <option value="ready">Ready</option>
+                    <option value="out_for_delivery">Out for Delivery</option>
+                    <option value="delivered">Delivered</option>
+                    <option value="cancelled">Cancelled</option>
+                </select>
+
+            </div>
+
+            <!-- ORDERS TABLE -->
+            <section class="orders-table">
+
+                <h2>All Customer Orders</h2>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Customer</th>
+                            <th>Restaurant</th>
+                            <th>Items</th>
+                            <th>Amount</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="ordersTable"></tbody>
+                </table>
+
+                <p id="emptyMessage" class="empty-message" style="display:none;">
+                    No orders found.
+                </p>
+
+            </section>
+
+        </main>
+
+    </div>
+
+    <!-- ORDER DETAILS MODAL -->
+    <div class="modal" id="orderModal">
+
+        <div class="modal-content">
+
+            <h2>Order Details</h2>
+
+            <div id="orderDetails"></div>
+
+            <label for="updateStatus">Update Order Status</label>
+
+            <select id="updateStatus">
+                <option value="pending">Pending</option>
+                <option value="confirmed">Confirmed</option>
+                <option value="preparing">Preparing</option>
+                <option value="ready">Ready</option>
+                <option value="out_for_delivery">Out for Delivery</option>
+                <option value="delivered">Delivered</option>
+                <option value="cancelled">Cancelled</option>
+            </select>
+
+            <div class="modal-actions">
+                <button class="save-btn" onclick="saveOrderStatus()">
+                    Save Status
+                </button>
+
+                <button class="close-btn" onclick="closeModal()">
+                    Close
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        let orders = [];
+
+        const ordersTable = document.getElementById("ordersTable");
+        const orderModal = document.getElementById("orderModal");
+
+        let selectedOrderId = null;
+
+        // STATUS CLASS
+        function getStatusClass(status) {
+            return status.toLowerCase().replaceAll(" ", "-");
+        }
+
+        // UPDATE STATISTICS
+        function updateStats() {
+
+            document.getElementById("totalOrders").textContent = orders.length;
+
+            document.getElementById("pendingOrders").textContent =
+                orders.filter(order => order.status === "Pending").length;
+
+            document.getElementById("preparingOrders").textContent =
+                orders.filter(order => order.status === "Preparing").length;
+
+            document.getElementById("deliveredOrders").textContent =
+                orders.filter(order => order.status === "Delivered").length;
+        }
+
+        // DISPLAY ORDERS
+        function displayOrders(data = orders) {
+
+            ordersTable.innerHTML = "";
+
+            document.getElementById("emptyMessage").style.display =
+                data.length === 0 ? "block" : "none";
+
+            data.forEach(order => {
+
+                const row = document.createElement("tr");
+
+                const values = [
+                    order.id,
+                    order.customer,
+                    order.restaurant,
+                    order.items,
+                    "₹" + order.amount,
+                    order.date
+                ];
+
+                values.forEach(value => {
+                    const cell = document.createElement("td");
+                    cell.textContent = value;
+                    row.appendChild(cell);
+                });
+
+                const statusCell = document.createElement("td");
+                const badge = document.createElement("span");
+
+                badge.className = "status-badge " + getStatusClass(order.status);
+                badge.textContent = order.status;
+
+                statusCell.appendChild(badge);
+                row.appendChild(statusCell);
+
+                const actionCell = document.createElement("td");
+
+                const viewButton = document.createElement("button");
+                viewButton.className = "action-btn view-btn";
+                viewButton.textContent = "View";
+                viewButton.addEventListener("click", () => viewOrder(order.id));
+
+                const deleteButton = document.createElement("button");
+                deleteButton.className = "action-btn delete-btn";
+                deleteButton.textContent = "Delete";
+                deleteButton.addEventListener("click", () => deleteOrder(order.id));
+
+                actionCell.append(viewButton, deleteButton);
+                row.appendChild(actionCell);
+
+                ordersTable.appendChild(row);
+
+            });
+
+            updateStats();
+        }
+
+        // VIEW ORDER DETAILS
+        function viewOrder(id) {
+
+            const order = orders.find(item => item.id === id);
+
+            if (!order) return;
+
+            selectedOrderId = id;
+
+            document.getElementById("orderDetails").innerHTML = `
+                <p><strong>Order ID:</strong> ${order.id}</p>
+                <p><strong>Customer:</strong> ${order.customer}</p>
+                <p><strong>Restaurant:</strong> ${order.restaurant}</p>
+                <p><strong>Items:</strong> ${order.items}</p>
+                <p><strong>Amount:</strong> ₹${order.amount}</p>
+                <p><strong>Date:</strong> ${order.date}</p>
+                <p><strong>Current Status:</strong> ${order.status}</p>
+            `;
+
+            document.getElementById("updateStatus").value = order.status;
+
+            orderModal.style.display = "flex";
+        }
+
+        // SAVE ORDER STATUS
+        function saveOrderStatus() {
+
+            const newStatus = document.getElementById("updateStatus").value;
+
+            orders = orders.map(order => {
+
+                if (order.id === selectedOrderId) {
+                    return {
+                        ...order,
+                        status: newStatus
+                    };
+                }
+
+                return order;
+            });
+
+            closeModal();
+            applyFilters();
+        }
+
+        // DELETE ORDER
+        function deleteOrder(id) {
+
+            if (!confirm("Are you sure you want to delete this order?")) {
+                return;
+            }
+
+            orders = orders.filter(order => order.id !== id);
+
+            applyFilters();
+        }
+
+        // CLOSE MODAL
+        function closeModal() {
+            orderModal.style.display = "none";
+            selectedOrderId = null;
+        }
+
+        // SEARCH AND FILTER
+        function applyFilters() {
+
+            const search = document.getElementById("searchOrder")
+                .value.toLowerCase();
+
+            const status = document.getElementById("statusFilter").value;
+
+            const filtered = orders.filter(order => {
+
+                const matchesSearch =
+                    order.id.toLowerCase().includes(search) ||
+                    order.customer.toLowerCase().includes(search);
+
+                const matchesStatus =
+                    status === "All" || order.status === status;
+
+                return matchesSearch && matchesStatus;
+            });
+
+            displayOrders(filtered);
+        }
+
+        document.getElementById("searchOrder")
+            .addEventListener("input", applyFilters);
+
+        document.getElementById("statusFilter")
+            .addEventListener("change", applyFilters);
+
+        // MOBILE SIDEBAR
+        const menuToggle = document.getElementById("menuToggle");
+        const sidebar = document.querySelector(".sidebar");
+
+        if (menuToggle && sidebar) {
+            menuToggle.addEventListener("click", () => {
+                sidebar.classList.toggle("active");
+            });
+        }
+
+    </script>
+    <script src="../../js/admin-api.js"></script>
+    <script>
+        (async function () {
+            if (!await SmartDineAdminAPI.requireAdmin()) return;
+
+            const tbody = document.getElementById("ordersTable");
+            const modal = document.getElementById("orderModal");
+            const search = document.getElementById("searchOrder");
+            const statusFilter = document.getElementById("statusFilter");
+            const orders = (await SmartDineAdminAPI.request("/orders/admin/")).orders || [];
+            let selectedOrder;
+
+            const searchable = search.cloneNode(true);
+            search.replaceWith(searchable);
+            const filterable = statusFilter.cloneNode(true);
+            statusFilter.replaceWith(filterable);
+
+            function render() {
+                const filtered = orders.filter(order => {
+                    const query = searchable.value.trim().toLowerCase();
+                    const queryMatch = !query ||
+                        order.order_number.toLowerCase().includes(query) ||
+                        order.customer_name.toLowerCase().includes(query);
+                    return queryMatch &&
+                        (filterable.value === "All" || order.status === filterable.value);
+                });
+                tbody.innerHTML = "";
+                document.getElementById("emptyMessage").style.display =
+                    filtered.length ? "none" : "block";
+                filtered.forEach(order => {
+                    const row = document.createElement("tr");
+                    [
+                        order.order_number,
+                        order.customer_name,
+                        order.restaurant_name,
+                        (order.items || []).map(item => item.food_name + " × " + item.quantity).join(", "),
+                        "₹" + Number(order.total_amount).toFixed(2),
+                        new Date(order.created_at).toLocaleString()
+                    ].forEach(value => {
+                        const cell = document.createElement("td");
+                        cell.textContent = value;
+                        row.appendChild(cell);
+                    });
+                    const statusCell = document.createElement("td");
+                    const badge = document.createElement("span");
+                    badge.className = "status-badge " + order.status.replace(/_/g, "-");
+                    badge.textContent = order.status.replace(/_/g, " ");
+                    statusCell.appendChild(badge);
+                    row.appendChild(statusCell);
+                    const actions = document.createElement("td");
+                    const view = document.createElement("button");
+                    view.type = "button";
+                    view.className = "action-btn view-btn";
+                    view.textContent = "View / Update";
+                    view.addEventListener("click", () => openOrder(order));
+                    actions.appendChild(view);
+                    row.appendChild(actions);
+                    tbody.appendChild(row);
+                });
+                const count = key => orders.filter(order => order.status === key).length;
+                document.getElementById("totalOrders").textContent = orders.length;
+                document.getElementById("pendingOrders").textContent = count("pending");
+                document.getElementById("preparingOrders").textContent =
+                    count("preparing") + count("ready");
+                document.getElementById("deliveredOrders").textContent = count("delivered");
+            }
+
+            function openOrder(order) {
+                selectedOrder = order;
+                const details = document.getElementById("orderDetails");
+                details.innerHTML = "";
+                [
+                    ["Order", order.order_number],
+                    ["Customer", order.customer_name],
+                    ["Restaurant", order.restaurant_name],
+                    ["Items", order.items.map(item => item.food_name + " × " + item.quantity).join(", ")],
+                    ["Delivery address", order.delivery_address],
+                    ["Amount", "₹" + Number(order.total_amount).toFixed(2)],
+                    ["Current status", order.status.replace(/_/g, " ")]
+                ].forEach(([label, value]) => {
+                    const paragraph = document.createElement("p");
+                    const strong = document.createElement("strong");
+                    strong.textContent = label + ": ";
+                    paragraph.append(strong, document.createTextNode(value));
+                    details.appendChild(paragraph);
+                });
+                document.getElementById("updateStatus").value = order.status;
+                modal.style.display = "flex";
+            }
+
+            document.querySelector(".save-btn").addEventListener("click", async () => {
+                if (!selectedOrder) return;
+                const button = document.querySelector(".save-btn");
+                button.disabled = true;
+                try {
+                    await SmartDineAdminAPI.request(
+                        "/orders/" + selectedOrder.id + "/update-status/",
+                        {
+                            method: "PATCH",
+                            body: JSON.stringify({
+                                status: document.getElementById("updateStatus").value
+                            })
+                        }
+                    );
+                    selectedOrder.status = document.getElementById("updateStatus").value;
+                    modal.style.display = "none";
+                    render();
+                } catch (error) {
+                    alert(error.message);
+                } finally {
+                    button.disabled = false;
+                }
+            });
+            document.querySelector(".close-btn").addEventListener("click", () => {
+                modal.style.display = "none";
+                selectedOrder = null;
+            });
+            searchable.addEventListener("input", render);
+            filterable.addEventListener("change", render);
+            render();
+        })().catch(error => {
+            document.getElementById("ordersTable").textContent = error.message;
+        });
+    </script>
+
+</body>
+</html>

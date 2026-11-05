@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SmartDine AI | Menu Management</title>
+    <link rel="stylesheet" href="../../css/admin-dashboard.css">
+    <style>
+        .menu-admin { max-width: 1100px; margin: auto; padding: 32px; color: #fff; }
+        .menu-admin h1, .menu-admin h2 { color: #e9a23b; }
+        .menu-admin section { margin: 22px 0; padding: 22px; background: #171717; border-radius: 12px; }
+        .menu-admin form { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
+        .menu-admin label { display: grid; gap: 6px; color: #ddd; }
+        .menu-admin input, .menu-admin textarea, .menu-admin select {
+            width: 100%; padding: 10px; border: 1px solid #555; border-radius: 6px;
+            background: #222; color: #fff;
+        }
+        .menu-admin textarea { min-height: 68px; }
+        .menu-admin button, .menu-admin a.action {
+            border: 0; padding: 10px 14px; border-radius: 6px; cursor: pointer;
+            background: #e9a23b; color: #111; font-weight: 700;
+        }
+        .menu-admin .wide { grid-column: 1 / -1; }
+        .menu-admin .checkbox { display: flex; align-items: center; gap: 8px; }
+        .menu-admin .checkbox input { width: auto; }
+        .menu-admin table { width: 100%; border-collapse: collapse; }
+        .menu-admin th, .menu-admin td { padding: 10px; text-align: left; border-bottom: 1px solid #444; }
+        .menu-admin td.actions { display: flex; gap: 8px; flex-wrap: wrap; }
+        .menu-admin .notice { color: #ccc; }
+        @media(max-width: 650px) {
+            .menu-admin { padding: 18px 12px; }
+            .menu-admin table { display: block; overflow-x: auto; }
+        }
+    </style>
+</head>
+<body>
+    <main class="menu-admin">
+        <p><a href="restaurants-management.html">← Restaurant management</a></p>
+        <h1 id="pageTitle">Menu management</h1>
+        <p class="notice">Accurate ingredient, allergen, diet and nutrition details are required for useful recommendations. Confirm allergen information directly with food suppliers.</p>
+
+        <section>
+            <label id="restaurantPickerLabel" class="wide">Restaurant
+                <select id="restaurantPicker"></select>
+            </label>
+        </section>
+
+        <section>
+            <h2>Menu categories</h2>
+            <form id="categoryForm">
+                <label>New category
+                    <input id="categoryName" maxlength="100" required>
+                </label>
+                <label>Description
+                    <input id="categoryDescription" maxlength="500">
+                </label>
+                <button type="submit">Add category</button>
+            </form>
+            <p id="categoryMessage" class="notice" aria-live="polite"></p>
+        </section>
+
+        <section>
+            <h2 id="foodFormHeading">Add food item</h2>
+            <form id="foodForm">
+                <input id="foodId" type="hidden">
+                <label>Name <input id="foodName" maxlength="200" required></label>
+                <label>Category <select id="foodCategory" required></select></label>
+                <label>Price (₹) <input id="foodPrice" type="number" min="0.01" step="0.01" required></label>
+                <label>Preparation time (minutes) <input id="foodPrep" type="number" min="0" required></label>
+                <label>Calories (kcal) <input id="foodCalories" type="number" min="0"></label>
+                <label>Protein (g) <input id="foodProtein" type="number" min="0" step="0.01"></label>
+                <label class="wide">Description <textarea id="foodDescription"></textarea></label>
+                <label class="wide">Ingredients (comma-separated)
+                    <textarea id="foodIngredients" placeholder="lentils, tomato, spices"></textarea>
+                </label>
+                <label class="wide">Allergens (comma-separated; leave blank only when confirmed none)
+                    <input id="foodAllergens" placeholder="peanuts, milk">
+                </label>
+                <label class="wide">Diet tags (comma-separated)
+                    <input id="foodTags" placeholder="vegetarian, vegan, gluten_free, high_protein">
+                </label>
+                <label class="checkbox"><input id="foodVegetarian" type="checkbox"> Vegetarian</label>
+                <label class="checkbox"><input id="foodLocal" type="checkbox"> Local specialty</label>
+                <label class="checkbox"><input id="foodAvailable" type="checkbox" checked> Available</label>
+                <button type="submit">Save food item</button>
+                <button id="cancelEdit" type="button" hidden>Cancel edit</button>
+            </form>
+            <p id="foodMessage" class="notice" aria-live="polite"></p>
+        </section>
+
+        <section>
+            <h2>Restaurant menu</h2>
+            <table>
+                <thead><tr><th>Dish</th><th>Category</th><th>Diet tags</th><th>Allergens</th><th>Status</th><th>Actions</th></tr></thead>
+                <tbody id="foodRows"></tbody>
+            </table>
+        </section>
+    </main>
+    <script src="../../js/admin-api.js"></script>
+    <script>
+        (async function () {
+            const user = await SmartDineAdminAPI.requireRestaurantManager();
+            if (!user) return;
+            const params = new URLSearchParams(location.search);
+            const requestedRestaurant = params.get("restaurant");
+            if (requestedRestaurant && !/^\d+$/.test(requestedRestaurant)) {
+                document.getElementById("foodMessage").textContent =
+                    "Invalid restaurant selection.";
+                return;
+            }
+            const picker = document.getElementById("restaurantPicker");
+            let restaurantData;
+            try {
+                restaurantData = await SmartDineAdminAPI.request("/restaurants/manage/");
+            } catch (error) {
+                document.getElementById("foodMessage").textContent =
+                    "Unable to load restaurants: " + error.message;
+                return;
+            }
+            const restaurants = (restaurantData.restaurants || []).filter(
+                restaurant => restaurant.is_active
+            );
+            restaurants.forEach(restaurant => {
+                const option = document.createElement("option");
+                option.value = restaurant.id;
+                option.textContent = restaurant.name + " — " + restaurant.city;
+                picker.appendChild(option);
+            });
+            if (!restaurants.length) {
+                document.getElementById("foodMessage").textContent =
+                    "Create or activate a restaurant before managing its menu.";
+                document.querySelectorAll("#categoryForm, #foodForm").forEach(form => {
+                    form.hidden = true;
+                });
+                const link = document.createElement("a");
+                link.href = "restaurants-management.html";
+                link.textContent = "Go to restaurant management";
+                document.querySelector(".menu-admin").appendChild(link);
+                return;
+            }
+            if (requestedRestaurant && !restaurants.some(
+                restaurant => String(restaurant.id) === requestedRestaurant
+            )) {
+                document.getElementById("foodMessage").textContent =
+                    "That restaurant is inactive or is not available to your account.";
+                return;
+            }
+            if (requestedRestaurant) picker.value = requestedRestaurant;
+            if (!picker.value) picker.value = restaurants[0].id;
+            let restaurantId = picker.value;
+            const selectedRestaurant = restaurants.find(
+                restaurant => String(restaurant.id) === restaurantId
+            );
+            if (!selectedRestaurant) {
+                document.getElementById("foodMessage").textContent =
+                    "That restaurant is not available to your account.";
+                return;
+            }
+            document.getElementById("pageTitle").textContent =
+                "Menu management — " + selectedRestaurant.name;
+            const categoriesSelect = document.getElementById("foodCategory");
+            const form = document.getElementById("foodForm");
+            const rows = document.getElementById("foodRows");
+            const categories = new Map();
+            let foods = [];
+            const list = values => values.split(",").map(value => value.trim()).filter(Boolean);
+
+            async function loadCategories() {
+                const data = await SmartDineAdminAPI.request(
+                    "/restaurants/manage/" + restaurantId + "/categories/"
+                );
+                categories.clear();
+                categoriesSelect.replaceChildren();
+                data.categories.forEach(category => {
+                    categories.set(category.id, category.name);
+                    const option = document.createElement("option");
+                    option.value = category.id;
+                    option.textContent = category.name;
+                    categoriesSelect.appendChild(option);
+                });
+            }
+
+            async function loadFoods() {
+                const data = await SmartDineAdminAPI.request(
+                    "/restaurants/manage/" + restaurantId + "/food-items/"
+                );
+                foods = data.food_items;
+                rows.replaceChildren();
+                foods.forEach(food => {
+                    const row = document.createElement("tr");
+                    [
+                        food.name + (food.calories == null ? "" : " · " + food.calories + " kcal"),
+                        categories.get(food.category) || "Uncategorized",
+                        (food.dietary_tags || []).join(", ") || "Not set",
+                        (food.allergens || []).join(", ") || "None declared",
+                        food.is_available ? "Available" : "Unavailable"
+                    ].forEach(text => {
+                        const cell = document.createElement("td");
+                        cell.textContent = text;
+                        row.appendChild(cell);
+                    });
+                    const actions = document.createElement("td");
+                    actions.className = "actions";
+                    const edit = document.createElement("button");
+                    edit.type = "button";
+                    edit.textContent = "Edit";
+                    edit.addEventListener("click", () => editFood(food));
+                    const toggle = document.createElement("button");
+                    toggle.type = "button";
+                    toggle.textContent = food.is_available ? "Mark unavailable" : "Make available";
+                    toggle.addEventListener("click", async () => {
+                        try {
+                            if (food.is_available) {
+                                await SmartDineAdminAPI.request(
+                                    "/restaurants/manage/food-items/" + food.id + "/",
+                                    { method: "DELETE" }
+                                );
+                            } else {
+                                await SmartDineAdminAPI.request(
+                                    "/restaurants/manage/food-items/" + food.id + "/",
+                                    { method: "PATCH", body: JSON.stringify({ is_available: true }) }
+                                );
+                            }
+                            await loadFoods();
+                        } catch (error) {
+                            alert(error.message);
+                        }
+                    });
+                    actions.append(edit, toggle);
+                    row.appendChild(actions);
+                    rows.appendChild(row);
+                });
+            }
+
+            function resetForm() {
+                form.reset();
+                document.getElementById("foodId").value = "";
+                document.getElementById("foodAvailable").checked = true;
+                document.getElementById("foodFormHeading").textContent = "Add food item";
+                document.getElementById("cancelEdit").hidden = true;
+            }
+
+            function editFood(food) {
+                document.getElementById("foodId").value = food.id;
+                document.getElementById("foodName").value = food.name;
+                categoriesSelect.value = food.category;
+                document.getElementById("foodPrice").value = food.price;
+                document.getElementById("foodPrep").value = food.preparation_time;
+                document.getElementById("foodCalories").value = food.calories ?? "";
+                document.getElementById("foodProtein").value = food.protein_g ?? "";
+                document.getElementById("foodDescription").value = food.description || "";
+                document.getElementById("foodIngredients").value = food.ingredients || "";
+                document.getElementById("foodAllergens").value = (food.allergens || []).join(", ");
+                document.getElementById("foodTags").value = (food.dietary_tags || []).join(", ");
+                document.getElementById("foodVegetarian").checked = food.is_vegetarian;
+                document.getElementById("foodLocal").checked = food.is_local_specialty;
+                document.getElementById("foodAvailable").checked = food.is_available;
+                document.getElementById("foodFormHeading").textContent = "Edit food item";
+                document.getElementById("cancelEdit").hidden = false;
+                window.scrollTo({ top: 0, behavior: "smooth" });
+            }
+
+            document.getElementById("cancelEdit").addEventListener("click", resetForm);
+            picker.addEventListener("change", () => {
+                window.location.href = "menu-management.html?restaurant=" +
+                    encodeURIComponent(picker.value);
+            });
+            document.getElementById("categoryForm").addEventListener("submit", async event => {
+                event.preventDefault();
+                const message = document.getElementById("categoryMessage");
+                try {
+                    await SmartDineAdminAPI.request(
+                        "/restaurants/manage/" + restaurantId + "/categories/",
+                        {
+                            method: "POST",
+                            body: JSON.stringify({
+                                name: document.getElementById("categoryName").value.trim(),
+                                description: document.getElementById("categoryDescription").value.trim()
+                            })
+                        }
+                    );
+                    event.currentTarget.reset();
+                    await loadCategories();
+                    message.textContent = "Category added.";
+                } catch (error) {
+                    message.textContent = "Unable to add category: " + error.message;
+                }
+            });
+            form.addEventListener("submit", async event => {
+                event.preventDefault();
+                const id = document.getElementById("foodId").value;
+                const calories = document.getElementById("foodCalories").value;
+                const protein = document.getElementById("foodProtein").value;
+                const payload = {
+                    category: Number(categoriesSelect.value),
+                    name: document.getElementById("foodName").value.trim(),
+                    description: document.getElementById("foodDescription").value.trim(),
+                    price: document.getElementById("foodPrice").value,
+                    preparation_time: Number(document.getElementById("foodPrep").value),
+                    is_vegetarian: document.getElementById("foodVegetarian").checked,
+                    is_local_specialty: document.getElementById("foodLocal").checked,
+                    is_available: document.getElementById("foodAvailable").checked,
+                    ingredients: document.getElementById("foodIngredients").value.trim(),
+                    allergens: list(document.getElementById("foodAllergens").value),
+                    dietary_tags: list(document.getElementById("foodTags").value),
+                    calories: calories ? Number(calories) : null,
+                    protein_g: protein || null
+                };
+                const message = document.getElementById("foodMessage");
+                try {
+                    await SmartDineAdminAPI.request(
+                        id ? "/restaurants/manage/food-items/" + id + "/" :
+                            "/restaurants/manage/" + restaurantId + "/food-items/",
+                        { method: id ? "PATCH" : "POST", body: JSON.stringify(payload) }
+                    );
+                    resetForm();
+                    await loadFoods();
+                    message.textContent = "Menu item saved.";
+                } catch (error) {
+                    message.textContent = "Unable to save menu item: " + error.message;
+                }
+            });
+
+            try {
+                await loadCategories();
+                await loadFoods();
+            } catch (error) {
+                document.getElementById("foodMessage").textContent =
+                    "Unable to load restaurant menu: " + error.message;
+            }
+        })();
+    </script>
+</body>
+</html>

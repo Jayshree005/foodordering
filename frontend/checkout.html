@@ -1,0 +1,600 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SmartDine | Checkout</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+
+    <style>
+        .checkout-page {
+            min-height: 100vh;
+            padding: 130px 7% 70px;
+        }
+
+        .checkout-heading {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .checkout-heading span {
+            color: #e9a23b;
+            letter-spacing: 3px;
+        }
+
+        .checkout-heading h1 {
+            color: white;
+            font-size: 38px;
+            margin: 15px 0;
+        }
+
+        .checkout-heading p {
+            color: #ccc;
+        }
+
+        .checkout-layout {
+            display: grid;
+            grid-template-columns: 1.6fr 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+
+        .checkout-form-card,
+        .order-summary {
+            background: rgba(0,0,0,0.75);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(233,162,59,0.3);
+            border-radius: 16px;
+            padding: 28px;
+        }
+
+        .checkout-form-card h2,
+        .order-summary h2 {
+            color: white;
+            margin-bottom: 25px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            display: block;
+            color: #eee;
+            margin-bottom: 9px;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 14px;
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 9px;
+            color: white;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            border-color: #e9a23b;
+        }
+
+        .form-group select option {
+            background: #21170f;
+            color: white;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .payment-options {
+            display: grid;
+            gap: 14px;
+        }
+
+        .payment-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 10px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .payment-option:has(input:checked) {
+            border-color: #e9a23b;
+            background: rgba(233,162,59,0.1);
+        }
+
+        .payment-option input {
+            accent-color: #e9a23b;
+        }
+
+        .payment-option span {
+            font-size: 15px;
+        }
+
+        .order-summary {
+            position: sticky;
+            top: 110px;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            color: #ccc;
+            padding: 13px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .summary-item strong {
+            color: white;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            color: #ccc;
+        }
+
+        .summary-total {
+            border-top: 1px solid rgba(255,255,255,0.2);
+            padding-top: 20px;
+            margin-top: 20px;
+        }
+
+        .summary-total span,
+        .summary-total strong {
+            color: #e9a23b;
+            font-size: 21px;
+            font-weight: bold;
+        }
+
+        .place-order-btn {
+            width: 100%;
+            padding: 16px;
+            margin-top: 25px;
+            border: none;
+            border-radius: 9px;
+            background: linear-gradient(135deg, #e9a23b, #d97706);
+            color: #111;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .place-order-btn:hover {
+            opacity: 0.85;
+        }
+
+        .back-cart {
+            display: inline-block;
+            margin-top: 25px;
+            color: #e9a23b;
+            text-decoration: none;
+        }
+
+        .empty-message {
+            color: white;
+            text-align: center;
+            padding: 30px;
+        }
+
+        .notice {
+            display: none;
+            margin-top: 18px;
+            padding: 15px;
+            border-radius: 9px;
+            color: #fff;
+            background: rgba(40,130,70,0.25);
+            border: 1px solid #4caf50;
+            line-height: 1.6;
+        }
+
+        @media(max-width: 850px) {
+            .checkout-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .order-summary {
+                position: static;
+            }
+        }
+
+        @media(max-width: 550px) {
+            .checkout-page {
+                padding: 110px 5% 50px;
+            }
+
+            .checkout-heading h1 {
+                font-size: 29px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full-width {
+                grid-column: auto;
+            }
+
+            .checkout-form-card,
+            .order-summary {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="background-overlay"></div>
+
+    <!-- NAVBAR -->
+    <header class="navbar">
+
+        <a href="index.html" class="logo">
+            <img src="../assets/images/WhatsApp Image 2026-11-04 at 8.51.29 PM (1).jpeg"
+                 alt="SmartDine Logo">
+        </a>
+
+        <nav class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="restaurants.html">Restaurants</a>
+            <a href="index.html#about">About</a>
+        </nav>
+
+        <div class="nav-actions">
+            <a href="login.html" class="login-btn">Login</a>
+            <a href="signup.html" class="signup-btn">Sign Up</a>
+        </div>
+
+    </header>
+
+    <!-- CHECKOUT -->
+    <main class="checkout-page">
+
+        <div class="checkout-heading">
+            <span>ALMOST THERE!</span>
+            <h1>Complete Your Order</h1>
+            <p>Enter your delivery details and review your order.</p>
+        </div>
+
+        <div class="checkout-layout">
+
+            <!-- CUSTOMER FORM -->
+            <section class="checkout-form-card">
+
+                <h2>📍 Delivery Information</h2>
+
+                <form id="checkoutForm">
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+                            <label for="fullName">Full Name *</label>
+                            <input
+                                type="text"
+                                id="fullName"
+                                placeholder="Enter your full name"
+                                required
+                                minlength="3"
+                                maxlength="100"
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phone">Mobile Number *</label>
+                            <input
+                                type="tel"
+                                id="phone"
+                                placeholder="10-digit mobile number"
+                                pattern="[6-9][0-9]{9}"
+                                maxlength="10"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="email">Email Address *</label>
+                            <input
+                                type="email"
+                                id="email"
+                                placeholder="example@email.com"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="address">Complete Address *</label>
+                            <textarea
+                                id="address"
+                                placeholder="House number, street, area, landmark..."
+                                required
+                                minlength="10"
+                            ></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="city">City *</label>
+                            <input
+                                type="text"
+                                id="city"
+                                placeholder="Enter city"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="state">State *</label>
+                            <input
+                                type="text"
+                                id="state"
+                                placeholder="Enter state"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="pincode">Pincode *</label>
+                            <input
+                                type="text"
+                                id="pincode"
+                                placeholder="6-digit pincode"
+                                pattern="[0-9]{6}"
+                                maxlength="6"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="landmark">Landmark (Optional)</label>
+                            <input
+                                type="text"
+                                id="landmark"
+                                placeholder="Nearby landmark"
+                            >
+                        </div>
+
+                    </div>
+
+                    <!-- PAYMENT -->
+                    <h2 style="margin-top:25px;">💳 Payment Method</h2>
+
+                    <div class="payment-options">
+
+                        <label class="payment-option">
+                            <input
+                                type="radio"
+                                name="payment"
+                                value="COD"
+                                checked
+                            >
+                            <span>💵 Cash on Delivery</span>
+                        </label>
+
+                        <label class="payment-option">
+                            <input
+                                type="radio"
+                                name="payment"
+                                value="ONLINE"
+                                disabled
+                            >
+                            <span>💳 Online Payment (not available yet)</span>
+                        </label>
+
+                    </div>
+
+                    <button type="submit" class="place-order-btn">
+                        Continue to Place Order →
+                    </button>
+
+                    <div class="notice" id="successNotice"></div>
+
+                </form>
+
+            </section>
+
+            <!-- ORDER SUMMARY -->
+            <aside class="order-summary">
+
+                <h2>Order Summary</h2>
+
+                <div id="summaryItems"></div>
+
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <strong id="subtotal">₹0.00</strong>
+                </div>
+
+                <div class="summary-row">
+                    <span>Delivery Fee</span>
+                    <strong id="deliveryFee">₹40.00</strong>
+                </div>
+
+                <div class="summary-row summary-total">
+                    <span>Total Amount</span>
+                    <strong id="totalAmount">₹0.00</strong>
+                </div>
+
+                <a href="cart.html" class="back-cart">
+                    ← Back to Cart
+                </a>
+
+            </aside>
+
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-bottom">
+            <p>© 2026 SmartDine. All Rights Reserved.</p>
+            <p>Good Food. Good Mood. ❤️</p>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT -->
+    <script src="../js/api.js"></script>
+    <script>
+        (async function () {
+            const form = document.getElementById("checkoutForm");
+            const notice = document.getElementById("successNotice");
+            const orderButton = form.querySelector("button[type='submit']");
+            let cart = [];
+
+            form.addEventListener("submit", async function (event) {
+                event.preventDefault();
+                event.stopImmediatePropagation();
+
+                if (!form.reportValidity()) return;
+                if (!localStorage.getItem("smartdineToken")) {
+                    window.location.href = "login.html?next=checkout.html";
+                    return;
+                }
+
+                try {
+                    cart = await SmartDineAPI.loadCart();
+                } catch (error) {
+                    notice.style.display = "block";
+                    notice.textContent = "Unable to verify your cart: " + error.message;
+                    return;
+                }
+                if (!cart.length) {
+                    notice.style.display = "block";
+                    notice.textContent = "Your cart is empty. Add items before placing an order.";
+                    return;
+                }
+
+                const restaurantIds = Array.from(new Set(cart.map(item => String(item.restaurant_id))));
+                if (restaurantIds.length !== 1) {
+                    notice.style.display = "block";
+                    notice.textContent = "Please place one restaurant order at a time. Return to your cart and remove items from other restaurants.";
+                    return;
+                }
+
+                const address = [
+                    document.getElementById("address").value.trim(),
+                    document.getElementById("landmark").value.trim(),
+                    document.getElementById("city").value.trim(),
+                    document.getElementById("state").value.trim(),
+                    document.getElementById("pincode").value.trim()
+                ].filter(Boolean).join(", ");
+
+                const details = {
+                    customer_name: document.getElementById("fullName").value.trim(),
+                    phone: document.getElementById("phone").value.trim(),
+                    email: document.getElementById("email").value.trim(),
+                    address: address,
+                    city: document.getElementById("city").value.trim(),
+                    state: document.getElementById("state").value.trim(),
+                    pincode: document.getElementById("pincode").value.trim(),
+                    landmark: document.getElementById("landmark").value.trim(),
+                    payment_method: "COD",
+                    items: cart
+                };
+
+                orderButton.disabled = true;
+                orderButton.textContent = "Placing Order...";
+                notice.style.display = "block";
+                notice.textContent = "Submitting your order...";
+
+                try {
+                    const result = await SmartDineAPI.request("/orders/place/", {
+                        method: "POST",
+                        body: JSON.stringify({
+                            restaurant_id: restaurantIds[0],
+                            delivery_address: address
+                        })
+                    });
+                    details.order = result.order;
+                    sessionStorage.setItem("smartdineCheckout", JSON.stringify(details));
+                    SmartDineAPI.saveLocalCart([]);
+                    window.location.href = "order-success.html?id=" +
+                        encodeURIComponent(result.order.id);
+                } catch (error) {
+                    notice.textContent = "Could not place your order: " + error.message;
+                } finally {
+                    orderButton.disabled = false;
+                    orderButton.textContent = "Continue to Place Order →";
+                }
+            }, true);
+
+            try {
+                if (!localStorage.getItem("smartdineToken")) {
+                    notice.style.display = "block";
+                    notice.textContent = "Sign in before placing your order. Your saved cart will be synced after login.";
+                    return;
+                }
+
+                cart = await SmartDineAPI.loadCart();
+                if (!cart.length) {
+                    form.style.display = "none";
+                    document.querySelector(".checkout-layout").innerHTML =
+                        '<div class="empty-message"><h2>Your Cart is Empty! 🛒</h2><p>Please add food items before checkout.</p><a href="restaurants.html" class="place-order-btn">Explore Restaurants</a></div>';
+                    return;
+                }
+
+                const user = JSON.parse(localStorage.getItem("smartdineUser") || "{}");
+                document.getElementById("fullName").value =
+                    [user.first_name, user.last_name].filter(Boolean).join(" ");
+                document.getElementById("email").value = user.email || "";
+                document.getElementById("phone").value = user.phone_number || "";
+                document.getElementById("address").value = user.delivery_address || "";
+                document.getElementById("pincode").value = user.postal_code || "";
+
+                const summaryItems = document.getElementById("summaryItems");
+                summaryItems.innerHTML = "";
+                let subtotal = 0;
+                cart.forEach(item => {
+                    const lineTotal = Number(item.price) * Number(item.quantity);
+                    subtotal += lineTotal;
+                    const row = document.createElement("div");
+                    row.className = "summary-item";
+                    const name = document.createElement("span");
+                    name.textContent = item.name + " × " + item.quantity;
+                    const amount = document.createElement("strong");
+                    amount.textContent = "₹" + lineTotal.toFixed(2);
+                    row.append(name, amount);
+                    summaryItems.appendChild(row);
+                });
+                document.getElementById("subtotal").textContent = "₹" + subtotal.toFixed(2);
+                document.getElementById("deliveryFee").textContent = "₹40.00";
+                document.getElementById("totalAmount").textContent = "₹" + (subtotal + 40).toFixed(2);
+            } catch (error) {
+                notice.style.display = "block";
+                notice.textContent = "Unable to load checkout: " + error.message;
+                orderButton.disabled = true;
+            }
+        })();
+    </script>
+    <script src="../js/auth-nav.js"></script>
+
+</body>
+</html>

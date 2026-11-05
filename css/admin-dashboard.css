@@ -1,0 +1,410 @@
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap');
+
+:root {
+    --gold: #edb94f;
+    --orange: #dc8b32;
+    --white: #ffffff;
+    --muted: #e0d7ca;
+    --glass: rgba(35, 24, 15, 0.82);
+    --border: rgba(255, 207, 126, 0.22);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'DM Sans', sans-serif;
+
+    background:
+        linear-gradient(
+            110deg,
+            rgba(15, 10, 6, 0.68),
+            rgba(20, 13, 8, 0.48),
+            rgba(18, 12, 7, 0.40)
+        ),
+        url("../assets/images/Restaurante Oscar São Paulo (1).jpg")
+        center / cover fixed no-repeat;
+
+    color: var(--white);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* ADMIN LAYOUT */
+
+.admin-layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* SIDEBAR */
+
+.sidebar {
+    width: 250px;
+    min-height: 100vh;
+    padding: 25px 18px;
+
+    background: rgba(24, 17, 11, 0.94);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+
+    border-right: 1px solid var(--border);
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+
+    transition: 0.3s;
+}
+
+/* LOGO */
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 40px;
+}
+
+.logo img {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.logo h2 {
+    color: var(--gold);
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+}
+
+/* SIDEBAR LINKS */
+
+.admin-label {
+    color: #b7a48d;
+    font-size: 11px;
+    letter-spacing: 2px;
+    margin: 20px 10px 15px;
+}
+
+.sidebar a {
+    display: block;
+    padding: 14px 15px;
+    margin-bottom: 9px;
+
+    color: #f5e8d5;
+    text-decoration: none;
+
+    border-radius: 9px;
+    font-size: 14px;
+    font-weight: 600;
+
+    transition: 0.3s;
+}
+
+.sidebar a:hover,
+.sidebar a.active {
+    background: rgba(237, 185, 79, 0.15);
+    color: var(--gold);
+}
+
+.sidebar a.logout {
+    margin-top: 35px;
+    color: #ff9990;
+}
+
+/* MAIN CONTENT */
+
+.main-content {
+    width: calc(100% - 250px);
+    margin-left: 250px;
+    padding: 30px;
+}
+
+/* TOPBAR */
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 35px;
+}
+
+.topbar h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 30px;
+    margin-bottom: 8px;
+}
+
+.topbar p {
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.admin-profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    background: var(--glass);
+    border: 1px solid var(--border);
+
+    padding: 10px 16px;
+    border-radius: 12px;
+}
+
+.admin-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+
+    background: linear-gradient(135deg, #f5ce79, #dc922f);
+    color: #251609;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-weight: 800;
+}
+
+.admin-profile small {
+    color: #cbbba7;
+}
+
+.menu-toggle {
+    display: none;
+    background: var(--gold);
+    color: #251609;
+    border: none;
+    padding: 9px 13px;
+    border-radius: 7px;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+/* SECTION TITLE */
+
+.section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    margin-bottom: 20px;
+}
+
+/* STATISTICS GRID */
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-bottom: 35px;
+}
+
+.stat-card {
+    background: rgba(35, 24, 15, 0.82);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+
+    border: 1px solid var(--border);
+
+    padding: 24px;
+    border-radius: 15px;
+
+    transition: 0.3s;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--gold);
+    background: rgba(65, 42, 23, 0.88);
+}
+
+.stat-icon {
+    font-size: 28px;
+    margin-bottom: 18px;
+}
+
+.stat-card p {
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 10px;
+}
+
+.stat-card h2 {
+    color: var(--gold);
+    font-size: 28px;
+    font-weight: 800;
+}
+
+.stat-change {
+    color: #cbbba7;
+    font-size: 12px;
+    margin-top: 10px;
+}
+
+/* RECENT ORDERS */
+
+.orders-section {
+    background: rgba(35, 24, 15, 0.84);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+
+    border: 1px solid var(--border);
+
+    padding: 25px;
+    border-radius: 15px;
+
+    overflow-x: auto;
+}
+
+.orders-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 22px;
+}
+
+.orders-header a {
+    color: var(--gold);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.orders-header a:hover {
+    color: #ffda91;
+    text-decoration: underline;
+}
+
+/* TABLE */
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 650px;
+}
+
+th,
+td {
+    padding: 16px 12px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 207, 126, 0.13);
+    font-size: 13px;
+}
+
+th {
+    color: var(--gold);
+    font-weight: 700;
+}
+
+td {
+    color: #f1e7d9;
+}
+
+tbody tr {
+    transition: 0.3s;
+}
+
+tbody tr:hover {
+    background: rgba(237, 185, 79, 0.07);
+}
+
+/* ORDER STATUS */
+
+.status {
+    display: inline-block;
+    padding: 7px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.delivered {
+    background: rgba(60, 190, 110, 0.15);
+    color: #8ce5a9;
+}
+
+.pending {
+    background: rgba(245, 185, 66, 0.15);
+    color: #f5c86f;
+}
+
+.cancelled {
+    background: rgba(255, 90, 90, 0.15);
+    color: #ff9990;
+}
+
+/* RESPONSIVE TABLET */
+
+@media (max-width: 1100px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* MOBILE */
+
+@media (max-width: 768px) {
+
+    .sidebar {
+        transform: translateX(-100%);
+    }
+
+    .sidebar.show {
+        transform: translateX(0);
+    }
+
+    .main-content {
+        width: 100%;
+        margin-left: 0;
+        padding: 20px 15px;
+    }
+
+    .menu-toggle {
+        display: block;
+    }
+
+    .topbar {
+        flex-wrap: wrap;
+    }
+
+    .topbar h1 {
+        font-size: 23px;
+    }
+
+    .admin-profile {
+        margin-top: 10px;
+    }
+}
+
+/* SMALL MOBILE */
+
+@media (max-width: 480px) {
+
+    body {
+        background-attachment: scroll;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .orders-section {
+        padding: 16px;
+    }
+
+    .admin-profile {
+        padding: 8px;
+    }
+
+    .topbar h1 {
+        font-size: 21px;
+    }
+}

@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SmartDine | About Us</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+
+    <style>
+        .about-container {
+            max-width: 1150px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+
+        .about-hero {
+            text-align: center;
+            padding: 55px 25px;
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(18px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 20px;
+            margin-bottom: 30px;
+        }
+
+        .about-hero h1 {
+            color: #f5b942;
+            font-size: 38px;
+            margin-bottom: 15px;
+        }
+
+        .about-hero p {
+            color: #ddd;
+            line-height: 1.8;
+            max-width: 750px;
+            margin: auto;
+        }
+
+        .about-section {
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(18px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 18px;
+            padding: 30px;
+            margin-bottom: 25px;
+            color: white;
+        }
+
+        .about-section h2 {
+            color: #f5b942;
+            font-size: 25px;
+            margin-bottom: 15px;
+        }
+
+        .about-section p {
+            color: #ddd;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 25px;
+            border-radius: 14px;
+            transition: 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: #f5b942;
+        }
+
+        .feature-card .icon {
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+
+        .feature-card h3 {
+            color: #f5b942;
+            margin-bottom: 10px;
+        }
+
+        .feature-card p {
+            font-size: 14px;
+        }
+
+        .about-cta {
+            text-align: center;
+        }
+
+        .about-btn {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 13px 28px;
+            background: #f5b942;
+            color: #171717;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .about-btn:hover {
+            background: #ffd477;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .about-hero h1 {
+                font-size: 29px;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .about-container {
+                margin: 20px auto;
+                padding: 12px;
+            }
+
+            .about-section {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <header>
+        <nav class="navbar">
+
+            <a href="index.html" class="logo">
+                <img src="../assets/images/WhatsApp Image 2026-11-04 at 8.51.29 PM (1).jpeg"
+                    alt="SmartDine Logo">
+                <span>SmartDine</span>
+            </a>
+
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="restaurants.html">Restaurants</a>
+                <a href="about.html">About</a>
+                <a href="my-orders.html">My Orders</a>
+                <a href="profile.html">Profile</a>
+            </div>
+
+            <button class="menu-toggle" id="menuToggle">☰</button>
+
+        </nav>
+
+        <div class="mobile-menu" id="mobileMenu">
+            <a href="index.html">Home</a>
+            <a href="restaurants.html">Restaurants</a>
+            <a href="about.html">About</a>
+            <a href="my-orders.html">My Orders</a>
+            <a href="profile.html">Profile</a>
+        </div>
+    </header>
+
+
+    <!-- ABOUT SECTION -->
+    <main class="about-container">
+
+        <section class="about-hero">
+            <h1>About SmartDine</h1>
+
+            <p>
+                Welcome to SmartDine – your smart destination for discovering
+                restaurants and ordering delicious food online. Our platform
+                brings multiple restaurants together in one place, making
+                food ordering simple, convenient and enjoyable.
+            </p>
+        </section>
+
+
+        <section class="about-section">
+
+            <h2>Who We Are</h2>
+
+            <p>
+                SmartDine is a multi-restaurant online food ordering platform
+                designed to connect customers with different restaurants.
+                Customers can explore restaurants, browse food menus,
+                customize dishes and place orders from a single platform.
+            </p>
+
+            <p>
+                Our goal is to make the food ordering experience more
+                convenient through technology and smart features.
+            </p>
+
+        </section>
+
+
+        <section class="about-section">
+
+            <h2>Our Mission</h2>
+
+            <p>
+                Our mission is to simplify online food ordering by providing
+                customers with multiple restaurant choices, personalized food
+                options and a smooth ordering experience.
+            </p>
+
+        </section>
+
+
+        <section class="about-section">
+
+            <h2>What Makes SmartDine Special?</h2>
+
+            <div class="features-grid">
+
+                <div class="feature-card">
+                    <div class="icon">🍽️</div>
+                    <h3>Multiple Restaurants</h3>
+                    <p>
+                        Explore different restaurants and their menus
+                        from one convenient platform.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="icon">🤖</div>
+                    <h3>AI Diet Recommendation</h3>
+                    <p>
+                        Get food suggestions based on dietary
+                        preferences and requirements.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="icon">🥗</div>
+                    <h3>Allergy Detection</h3>
+                    <p>
+                        Identify potential allergens in food ingredients
+                        before placing an order.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="icon">✨</div>
+                    <h3>AI Dish Customizer</h3>
+                    <p>
+                        Customize dishes according to your taste,
+                        such as less spicy, less oil or no onion.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="icon">🌍</div>
+                    <h3>Tourist Mode</h3>
+                    <p>
+                        Help visitors explore food options and
+                        understand menus more easily.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="icon">📊</div>
+                    <h3>Smart Analytics</h3>
+                    <p>
+                        Support restaurant owners with review analysis,
+                        demand forecasting and waste prediction.
+                    </p>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <section class="about-section about-cta">
+
+            <h2>Discover Your Next Favourite Meal!</h2>
+
+            <p>
+                Explore restaurants, discover new dishes and enjoy
+                a smarter food ordering experience with SmartDine.
+            </p>
+
+            <a href="restaurants.html" class="about-btn">
+                Explore Restaurants
+            </a>
+
+        </section>
+
+    </main>
+
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <p>© 2026 SmartDine. All Rights Reserved.</p>
+    </footer>
+
+
+    <script src="../js/app.js"></script>
+    <script src="../js/auth-nav.js"></script>
+
+</body>
+</html>

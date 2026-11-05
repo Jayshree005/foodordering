@@ -1,0 +1,705 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SmartDine | My Cart</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+
+    <style>
+        .cart-page {
+            min-height: 100vh;
+            padding: 130px 7% 70px;
+        }
+
+        .cart-heading {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .cart-heading span {
+            color: #e9a23b;
+            letter-spacing: 3px;
+        }
+
+        .cart-heading h1 {
+            color: white;
+            font-size: 38px;
+            margin: 15px 0;
+        }
+
+        .cart-heading p {
+            color: #ccc;
+        }
+
+        .cart-layout {
+            display: grid;
+            grid-template-columns: 1.7fr 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+
+        .cart-items {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .cart-item {
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            gap: 20px;
+            padding: 20px;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 16px;
+        }
+
+        .cart-item img,
+        .cart-image-placeholder {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 12px;
+        }
+
+        .cart-image-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.08);
+            font-size: 45px;
+        }
+
+        .cart-item-details h3 {
+            color: white;
+            font-size: 19px;
+            margin-bottom: 8px;
+        }
+
+        .cart-item-details p {
+            color: #bbb;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .item-price {
+            color: #e9a23b;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .cart-item-actions {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: rgba(255,255,255,0.08);
+            padding: 6px 12px;
+            border-radius: 25px;
+        }
+
+        .quantity-control button {
+            background: none;
+            border: none;
+            color: #e9a23b;
+            font-size: 20px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .quantity-control span {
+            color: white;
+            font-weight: bold;
+        }
+
+        .remove-btn {
+            background: none;
+            border: none;
+            color: #ff7777;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .remove-btn:hover {
+            color: red;
+        }
+
+        .summary-card {
+            background: rgba(0,0,0,0.75);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(233,162,59,0.4);
+            border-radius: 16px;
+            padding: 25px;
+            position: sticky;
+            top: 110px;
+        }
+
+        .summary-card h2 {
+            color: white;
+            margin-bottom: 25px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            color: #ccc;
+            margin-bottom: 18px;
+            gap: 10px;
+        }
+
+        .summary-row strong {
+            color: white;
+        }
+
+        .summary-total {
+            border-top: 1px solid rgba(255,255,255,0.2);
+            padding-top: 20px;
+            margin-top: 20px;
+        }
+
+        .summary-total span,
+        .summary-total strong {
+            color: #e9a23b;
+            font-size: 21px;
+            font-weight: bold;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            padding: 15px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 9px;
+            background: linear-gradient(135deg, #e9a23b, #d97706);
+            color: #111;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .checkout-btn:hover {
+            opacity: 0.85;
+        }
+
+        .clear-cart-btn {
+            width: 100%;
+            margin-top: 12px;
+            padding: 12px;
+            background: transparent;
+            border: 1px solid #ff7777;
+            color: #ff7777;
+            border-radius: 9px;
+            cursor: pointer;
+        }
+
+        .continue-shopping {
+            display: inline-block;
+            margin-top: 25px;
+            color: #e9a23b;
+            text-decoration: none;
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 65px 20px;
+            background: rgba(0,0,0,0.65);
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.12);
+        }
+
+        .empty-cart .empty-icon {
+            font-size: 65px;
+        }
+
+        .empty-cart h2 {
+            color: white;
+            margin: 15px 0;
+        }
+
+        .empty-cart p {
+            color: #bbb;
+        }
+
+        .empty-cart a {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 25px;
+            background: #e9a23b;
+            color: #111;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        @media(max-width: 850px) {
+            .cart-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .summary-card {
+                position: static;
+            }
+        }
+
+        @media(max-width: 500px) {
+            .cart-page {
+                padding: 110px 5% 50px;
+            }
+
+            .cart-heading h1 {
+                font-size: 29px;
+            }
+
+            .cart-item {
+                grid-template-columns: 85px 1fr;
+                gap: 12px;
+                padding: 12px;
+            }
+
+            .cart-item img,
+            .cart-image-placeholder {
+                width: 85px;
+                height: 85px;
+            }
+
+            .cart-item-details h3 {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="background-overlay"></div>
+
+    <!-- NAVBAR -->
+    <header class="navbar">
+
+        <a href="index.html" class="logo">
+            <img src="../assets/images/WhatsApp Image 2026-11-04 at 8.51.29 PM (1).jpeg"
+                 alt="SmartDine Logo">
+        </a>
+
+        <nav class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="restaurants.html">Restaurants</a>
+            <a href="index.html#about">About</a>
+        </nav>
+
+        <div class="nav-actions">
+            <a href="login.html" class="login-btn">Login</a>
+            <a href="signup.html" class="signup-btn">Sign Up</a>
+        </div>
+
+    </header>
+
+    <!-- CART PAGE -->
+    <main class="cart-page">
+
+        <div class="cart-heading">
+            <span>YOUR FOOD SELECTION</span>
+            <h1>My Shopping Cart 🛒</h1>
+            <p>Review your favourite dishes before placing your order.</p>
+        </div>
+
+        <div id="cartContainer">
+
+            <!-- JavaScript will display cart items here -->
+
+        </div>
+
+        <a href="restaurants.html" class="continue-shopping">
+            ← Continue Shopping
+        </a>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-bottom">
+            <p>© 2026 SmartDine. All Rights Reserved.</p>
+            <p>Good Food. Good Mood. ❤️</p>
+        </div>
+    </footer>
+
+    <!-- CART JAVASCRIPT -->
+    <script>
+
+        const cartContainer = document.getElementById("cartContainer");
+
+        let cart = JSON.parse(localStorage.getItem("smartdineCart")) || [];
+
+        const DELIVERY_FEE = 40;
+
+        // SAVE CART
+
+        function saveCart() {
+
+            localStorage.setItem(
+                "smartdineCart",
+                JSON.stringify(cart)
+            );
+
+        }
+
+        // UPDATE QUANTITY
+
+        function changeQuantity(index, change) {
+
+            cart[index].quantity += change;
+
+            if (cart[index].quantity <= 0) {
+                removeItem(index);
+                return;
+            }
+
+            saveCart();
+            displayCart();
+
+        }
+
+        // REMOVE ITEM
+
+        function removeItem(index) {
+
+            cart.splice(index, 1);
+
+            saveCart();
+            displayCart();
+
+        }
+
+        // CLEAR CART
+
+        function clearCart() {
+
+            if (confirm("Are you sure you want to clear your cart?")) {
+
+                cart = [];
+
+                saveCart();
+                displayCart();
+
+            }
+
+        }
+
+        // DISPLAY CART
+
+        function displayCart() {
+
+            cartContainer.innerHTML = "";
+
+            if (cart.length === 0) {
+
+                cartContainer.innerHTML = `
+                    <div class="empty-cart">
+
+                        <div class="empty-icon">🛒</div>
+
+                        <h2>Your Cart is Empty!</h2>
+
+                        <p>
+                            You haven't added any delicious food yet.
+                            Explore restaurants and order your favourite dishes.
+                        </p>
+
+                        <a href="restaurants.html">
+                            Explore Restaurants →
+                        </a>
+
+                    </div>
+                `;
+
+                return;
+
+            }
+
+            let subtotal = 0;
+
+            const layout = document.createElement("div");
+            layout.className = "cart-layout";
+
+            const itemsSection = document.createElement("div");
+            itemsSection.className = "cart-items";
+
+            cart.forEach((item, index) => {
+
+                const price = Number(item.price) || 0;
+                const quantity = Number(item.quantity) || 1;
+
+                subtotal += price * quantity;
+
+                const card = document.createElement("article");
+                card.className = "cart-item";
+
+                const imageArea = document.createElement("div");
+
+                if (item.image) {
+
+                    const image = document.createElement("img");
+                    image.src = item.image;
+                    image.alt = item.name || "Food item";
+
+                    image.onerror = function () {
+                        const placeholder = document.createElement("div");
+                        placeholder.className = "cart-image-placeholder";
+                        placeholder.textContent = "🍽️";
+                        this.replaceWith(placeholder);
+                    };
+
+                    imageArea.appendChild(image);
+
+                } else {
+
+                    const placeholder = document.createElement("div");
+                    placeholder.className = "cart-image-placeholder";
+                    placeholder.textContent = "🍽️";
+
+                    imageArea.appendChild(placeholder);
+
+                }
+
+                const details = document.createElement("div");
+                details.className = "cart-item-details";
+
+                const name = document.createElement("h3");
+                name.textContent = item.name || "Food Item";
+
+                const restaurant = document.createElement("p");
+                restaurant.textContent =
+                    "Restaurant ID: " + (item.restaurant_id || "N/A");
+
+                const customizations = document.createElement("p");
+                customizations.textContent = item.customizations?.length
+                    ? "Customization: " + item.customizations.join(", ")
+                    : "";
+
+                const priceElement = document.createElement("div");
+                priceElement.className = "item-price";
+                priceElement.textContent = "₹" + (price * quantity).toFixed(2);
+
+                const actions = document.createElement("div");
+                actions.className = "cart-item-actions";
+
+                const quantityControl = document.createElement("div");
+                quantityControl.className = "quantity-control";
+
+                const minus = document.createElement("button");
+                minus.textContent = "−";
+                minus.setAttribute("aria-label", "Decrease quantity");
+                minus.addEventListener("click", () => {
+                    changeQuantity(index, -1);
+                });
+
+                const quantityText = document.createElement("span");
+                quantityText.textContent = quantity;
+
+                const plus = document.createElement("button");
+                plus.textContent = "+";
+                plus.setAttribute("aria-label", "Increase quantity");
+                plus.addEventListener("click", () => {
+                    changeQuantity(index, 1);
+                });
+
+                quantityControl.append(minus, quantityText, plus);
+
+                const removeButton = document.createElement("button");
+                removeButton.className = "remove-btn";
+                removeButton.textContent = "🗑 Remove";
+                removeButton.addEventListener("click", () => {
+                    removeItem(index);
+                });
+
+                actions.append(quantityControl, removeButton);
+
+                details.append(name, restaurant, customizations, priceElement, actions);
+
+                card.append(imageArea, details);
+
+                itemsSection.appendChild(card);
+
+            });
+
+            // ORDER SUMMARY
+
+            const delivery = DELIVERY_FEE;
+            const total = subtotal + delivery;
+
+            const summary = document.createElement("div");
+            summary.className = "summary-card";
+
+            summary.innerHTML = `
+                <h2>Order Summary</h2>
+
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <strong>₹${subtotal.toFixed(2)}</strong>
+                </div>
+
+                <div class="summary-row">
+                    <span>Delivery Fee</span>
+                    <strong>₹${delivery.toFixed(2)}</strong>
+                </div>
+
+                <div class="summary-row summary-total">
+                    <span>Total Amount</span>
+                    <strong>₹${total.toFixed(2)}</strong>
+                </div>
+
+                <button class="checkout-btn" id="checkoutButton">
+                    Proceed to Checkout →
+                </button>
+
+                <button class="clear-cart-btn" id="clearCartButton">
+                    Clear Cart
+                </button>
+            `;
+
+            summary.querySelector("#checkoutButton")
+                .addEventListener("click", function () {
+
+                    window.location.href = "checkout.html";
+
+                });
+
+            summary.querySelector("#clearCartButton")
+                .addEventListener("click", clearCart);
+
+            layout.append(itemsSection, summary);
+
+            cartContainer.appendChild(layout);
+
+        }
+
+        // INITIALIZE
+
+        displayCart();
+
+    </script>
+    <script src="../js/api.js"></script>
+    <script>
+        (async function () {
+            const container = document.getElementById("cartContainer");
+            let items;
+
+            function render() {
+                container.innerHTML = "";
+                if (!items.length) {
+                    container.innerHTML = `
+                        <div class="empty-cart">
+                            <div class="empty-icon">🛒</div>
+                            <h2>Your Cart is Empty!</h2>
+                            <p>Explore restaurants and order your favourite dishes.</p>
+                            <a href="restaurants.html">Explore Restaurants →</a>
+                        </div>`;
+                    return;
+                }
+
+                const subtotal = items.reduce(
+                    (total, item) => total + Number(item.price) * Number(item.quantity), 0
+                );
+                const layout = document.createElement("div");
+                layout.className = "cart-layout";
+                const list = document.createElement("div");
+                list.className = "cart-items";
+
+                items.forEach((item, index) => {
+                    const row = document.createElement("article");
+                    row.className = "cart-item";
+                    const title = document.createElement("h3");
+                    title.textContent = item.name || "Food Item";
+                    const restaurant = document.createElement("p");
+                    restaurant.textContent = "Restaurant ID: " + item.restaurant_id;
+                    const price = document.createElement("p");
+                    price.textContent = "₹" + (item.price * item.quantity).toFixed(2);
+                    const quantity = document.createElement("span");
+                    quantity.textContent = item.quantity;
+                    const minus = document.createElement("button");
+                    minus.textContent = "−";
+                    minus.addEventListener("click", () => change(index, -1));
+                    const plus = document.createElement("button");
+                    plus.textContent = "+";
+                    plus.addEventListener("click", () => change(index, 1));
+                    const remove = document.createElement("button");
+                    remove.className = "remove-btn";
+                    remove.textContent = "Remove";
+                    remove.addEventListener("click", () => change(index, 0));
+                    row.append(title, restaurant, price, minus, quantity, plus, remove);
+                    list.appendChild(row);
+                });
+
+                const summary = document.createElement("div");
+                summary.className = "summary-card";
+                summary.innerHTML = `
+                    <h2>Order Summary</h2>
+                    <div class="summary-row"><span>Subtotal</span><strong>₹${subtotal.toFixed(2)}</strong></div>
+                    <div class="summary-row"><span>Delivery Fee</span><strong>₹40.00</strong></div>
+                    <div class="summary-row summary-total"><span>Total Amount</span><strong>₹${(subtotal + 40).toFixed(2)}</strong></div>
+                    <p id="cartError" role="alert"></p>
+                    <button class="checkout-btn" id="checkoutButton">Proceed to Checkout →</button>
+                    <button class="clear-cart-btn" id="clearCartButton">Clear Cart</button>`;
+                summary.querySelector("#checkoutButton").addEventListener("click", () => {
+                    const restaurants = new Set(items.map(item => String(item.restaurant_id)));
+                    if (restaurants.size !== 1) {
+                        summary.querySelector("#cartError").textContent =
+                            "Checkout supports one restaurant per order. Remove items from other restaurants first.";
+                        return;
+                    }
+                    if (!localStorage.getItem("smartdineToken")) {
+                        window.location.href = "login.html?next=checkout.html";
+                        return;
+                    }
+                    window.location.href = "checkout.html";
+                });
+                summary.querySelector("#clearCartButton").addEventListener("click", async () => {
+                    if (!confirm("Are you sure you want to clear your cart?")) return;
+                    try {
+                        items = await SmartDineAPI.clearCart();
+                        render();
+                    } catch (error) {
+                        summary.querySelector("#cartError").textContent = error.message;
+                    }
+                });
+                layout.append(list, summary);
+                container.appendChild(layout);
+            }
+
+            async function change(index, delta) {
+                const item = items[index];
+                const quantity = delta === 0 ? 0 : item.quantity + delta;
+                try {
+                    items = await SmartDineAPI.updateCartItem(item, quantity);
+                    render();
+                } catch (error) {
+                    alert(error.message);
+                }
+            }
+
+            try {
+                items = await SmartDineAPI.loadCart();
+                render();
+            } catch (error) {
+                container.textContent = "Unable to load your cart: " + error.message;
+            }
+        })();
+    </script>
+    <script src="../js/auth-nav.js"></script>
+
+</body>
+</html>

@@ -1,13 +1,14 @@
 from django.contrib.auth import authenticate
 
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 
 from .models import User
-from .serializers import SignupSerializer
+from .models import ContactMessage
+from .serializers import ContactMessageSerializer, ProfileSerializer, SignupSerializer
 
 
 # =====================================
@@ -58,9 +59,14 @@ def login_user(request):
             'user': {
                 'id': user.id,
                 'username': user.username,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
                 'email': user.email,
+                'phone_number': user.phone_number,
                 'user_type': user.user_type,
-                'preferred_language': user.preferred_language
+                'preferred_language': user.preferred_language,
+                'delivery_address': user.delivery_address,
+                'postal_code': user.postal_code
             }
         },
         status=status.HTTP_200_OK
@@ -92,9 +98,14 @@ def signup_user(request):
                 'user': {
                     'id': user.id,
                     'username': user.username,
+                    'first_name': user.first_name,
+                    'last_name': user.last_name,
                     'email': user.email,
+                    'phone_number': user.phone_number,
                     'user_type': user.user_type,
-                    'preferred_language': user.preferred_language
+                    'preferred_language': user.preferred_language,
+                    'delivery_address': user.delivery_address,
+                    'postal_code': user.postal_code
                 }
             },
             status=status.HTTP_201_CREATED
@@ -104,3 +115,33 @@ def signup_user(request):
         serializer.errors,
         status=status.HTTP_400_BAD_REQUEST
     )
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def submit_contact_message(request):
+    serializer = ContactMessageSerializer(data=request.data)
+    if not serializer.is_valid():
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    serializer.save()
+    return Response(
+        {'message': 'Your message has been received.'},
+        status=status.HTTP_201_CREATED
+    )
+
+
+@api_view(['GET', 'PATCH'])
+@permission_classes([IsAuthenticated])
+def profile(request):
+    if request.method == 'PATCH':
+        serializer = ProfileSerializer(
+            request.user,
+            data=request.data,
+            partial=True
+        )
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    return Response(ProfileSerializer(request.user).data, status=status.HTTP_200_OK)

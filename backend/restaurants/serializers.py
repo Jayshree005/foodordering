@@ -64,6 +64,12 @@ class FoodItemSerializer(serializers.ModelSerializer):
             'preparation_time',
             'is_available',
             'is_vegetarian',
+            'ingredients',
+            'allergens',
+            'dietary_tags',
+            'calories',
+            'protein_g',
+            'is_local_specialty',
             'created_at',
             'updated_at'
         ]

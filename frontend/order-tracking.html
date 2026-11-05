@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SmartDine | Track Your Order</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+
+    <style>
+        .tracking-container {
+            max-width: 1100px;
+            margin: 50px auto;
+            padding: 25px;
+        }
+
+        .tracking-header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .tracking-header h1 {
+            color: #f5b942;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .tracking-header p {
+            color: #ddd;
+        }
+
+        .tracking-card {
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(18px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 18px;
+            padding: 30px;
+            margin-bottom: 25px;
+            color: white;
+        }
+
+        .tracking-top {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            padding-bottom: 20px;
+            margin-bottom: 25px;
+        }
+
+        .tracking-top h2 {
+            color: #f5b942;
+            margin-bottom: 8px;
+        }
+
+        .order-number {
+            color: #ccc;
+            font-size: 14px;
+        }
+
+        .delivery-time {
+            text-align: right;
+        }
+
+        .delivery-time h2 {
+            color: #f5b942;
+            font-size: 25px;
+        }
+
+        .delivery-time p {
+            color: #ccc;
+            font-size: 14px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            background: rgba(245, 185, 66, 0.15);
+            color: #f5b942;
+            border: 1px solid rgba(245, 185, 66, 0.4);
+            padding: 7px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            margin-top: 10px;
+        }
+
+        .timeline {
+            margin-top: 25px;
+        }
+
+        .timeline-item {
+            display: flex;
+            gap: 18px;
+            position: relative;
+            padding-bottom: 35px;
+        }
+
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+
+        .timeline-icon {
+            width: 42px;
+            height: 42px;
+            min-width: 42px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 19px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            z-index: 1;
+        }
+
+        .timeline-item.completed .timeline-icon {
+            background: #f5b942;
+            color: #171717;
+            border-color: #f5b942;
+        }
+
+        .timeline-item.active .timeline-icon {
+            border: 2px solid #f5b942;
+            color: #f5b942;
+        }
+
+        .timeline-item:not(:last-child)::after {
+            content: "";
+            position: absolute;
+            left: 20px;
+            top: 42px;
+            width: 2px;
+            height: calc(100% - 42px);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .timeline-item.completed:not(:last-child)::after {
+            background: #f5b942;
+        }
+
+        .timeline-content h3 {
+            font-size: 17px;
+            margin-bottom: 6px;
+        }
+
+        .timeline-content p {
+            color: #bbb;
+            font-size: 14px;
+        }
+
+        .tracking-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .detail-box {
+            background: rgba(255, 255, 255, 0.06);
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        .detail-box h3 {
+            color: #f5b942;
+            margin-bottom: 12px;
+            font-size: 17px;
+        }
+
+        .detail-box p {
+            color: #ddd;
+            margin: 8px 0;
+            font-size: 14px;
+        }
+
+        .tracking-actions {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 25px;
+        }
+
+        .tracking-btn {
+            padding: 12px 22px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            background: #f5b942;
+            color: #171717;
+            transition: 0.3s;
+        }
+
+        .tracking-btn:hover {
+            background: #ffd477;
+            transform: translateY(-2px);
+        }
+
+        .tracking-btn.secondary {
+            background: transparent;
+            color: #f5b942;
+            border: 1px solid #f5b942;
+        }
+
+        .tracking-btn.secondary:hover {
+            background: rgba(245, 185, 66, 0.12);
+        }
+
+        @media (max-width: 650px) {
+            .tracking-container {
+                margin: 25px auto;
+                padding: 15px;
+            }
+
+            .tracking-card {
+                padding: 20px;
+            }
+
+            .tracking-header h1 {
+                font-size: 25px;
+            }
+
+            .delivery-time {
+                text-align: left;
+            }
+
+            .tracking-details {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <header>
+        <nav class="navbar">
+
+            <a href="index.html" class="logo">
+                <img src="../assets/images/WhatsApp Image 2026-11-04 at 8.51.29 PM (1).jpeg"
+                    alt="SmartDine Logo">
+                <span>SmartDine</span>
+            </a>
+
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="restaurants.html">Restaurants</a>
+                <a href="my-orders.html">My Orders</a>
+                <a href="profile.html">Profile</a>
+            </div>
+
+            <button class="menu-toggle" id="menuToggle">☰</button>
+
+        </nav>
+
+        <div class="mobile-menu" id="mobileMenu">
+            <a href="index.html">Home</a>
+            <a href="restaurants.html">Restaurants</a>
+            <a href="my-orders.html">My Orders</a>
+            <a href="profile.html">Profile</a>
+        </div>
+    </header>
+
+
+    <!-- TRACKING SECTION -->
+    <main class="tracking-container">
+
+        <div class="tracking-header">
+            <h1>Track Your Order</h1>
+            <p>Stay updated and follow your food delivery journey.</p>
+        </div>
+
+
+        <!-- ORDER STATUS -->
+        <section class="tracking-card">
+
+            <div class="tracking-top">
+
+                <div>
+                    <h2>Loading your order status...</h2>
+                    <p class="order-number">
+                        Order ID: <strong id="trackingOrderId">Loading...</strong>
+                    </p>
+                    <span class="status-badge">Loading status...</span>
+                </div>
+
+                <div class="delivery-time">
+                    <p>Estimated Delivery</p>
+                    <h2>30–40 min</h2>
+                    <p>Your food will arrive soon.</p>
+                </div>
+
+            </div>
+
+
+            <!-- ORDER TIMELINE -->
+            <h2>Order Progress</h2>
+
+            <div class="timeline">
+
+                <div class="timeline-item completed">
+                    <div class="timeline-icon">✓</div>
+                    <div class="timeline-content">
+                        <h3>Order Confirmed</h3>
+                        <p>Your order has been successfully placed.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item completed">
+                    <div class="timeline-icon">✓</div>
+                    <div class="timeline-content">
+                        <h3>Restaurant Accepted</h3>
+                        <p>The restaurant has accepted your order.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item active">
+                    <div class="timeline-icon">🍳</div>
+                    <div class="timeline-content">
+                        <h3>Food Preparing</h3>
+                        <p>Your delicious food is being prepared.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-icon">🛵</div>
+                    <div class="timeline-content">
+                        <h3>Out for Delivery</h3>
+                        <p>Your order will be on its way soon.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-icon">🏠</div>
+                    <div class="timeline-content">
+                        <h3>Delivered</h3>
+                        <p>Your order will be delivered to your doorstep.</p>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ORDER DETAILS -->
+        <section class="tracking-details">
+
+            <div class="tracking-card detail-box">
+
+                <h3>Restaurant Details</h3>
+
+                <p><strong>Restaurant:</strong> Italian Bistro</p>
+                <p><strong>Contact:</strong> +91 9876543210</p>
+                <p><strong>Order Type:</strong> Home Delivery</p>
+
+            </div>
+
+
+            <div class="tracking-card detail-box">
+
+                <h3>Delivery Address</h3>
+
+                <p><strong>Name:</strong> Customer</p>
+                <p><strong>Address:</strong> Your saved delivery address</p>
+                <p><strong>Payment:</strong> Online / Cash on Delivery</p>
+
+            </div>
+
+        </section>
+
+
+        <!-- ACTION BUTTONS -->
+        <div class="tracking-actions">
+
+            <a href="my-orders.html" class="tracking-btn">
+                View My Orders
+            </a>
+
+            <a href="restaurants.html" class="tracking-btn secondary">
+                Order Again
+            </a>
+
+        </div>
+
+    </main>
+
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <p>© 2026 SmartDine. All Rights Reserved.</p>
+    </footer>
+
+
+    <script src="../js/app.js"></script>
+
+    <script>
+        // Read order ID from checkout data if available
+        const checkoutData = sessionStorage.getItem("smartdineCheckout");
+
+        if (checkoutData) {
+            try {
+                const order = JSON.parse(checkoutData);
+
+                if (order.orderId) {
+                    document.getElementById("trackingOrderId").textContent = order.orderId;
+                }
+            } catch (error) {
+                console.log("Unable to load order details.");
+            }
+        }
+    </script>
+    <script src="../js/api.js"></script>
+    <script>
+        (async function () {
+            const params = new URLSearchParams(window.location.search);
+            const orderId = params.get("id");
+            const card = document.querySelector(".tracking-card");
+
+            if (!orderId) {
+                card.textContent = "Order ID is missing. Open tracking from My Orders.";
+                return;
+            }
+
+            try {
+                const order = await SmartDineAPI.request(
+                    "/orders/" + encodeURIComponent(orderId) + "/"
+                );
+                const status = order.status;
+                const labels = ["Order Confirmed", "Restaurant Accepted", "Food Preparing", "Out for Delivery", "Delivered"];
+                const stage = {
+                    pending: 0,
+                    confirmed: 1,
+                    preparing: 2,
+                    ready: 2,
+                    out_for_delivery: 3,
+                    delivered: 4
+                }[status];
+
+                document.querySelector(".tracking-top h2").textContent =
+                    status === "cancelled" ? "This order was cancelled" :
+                    "Order " + status.replace(/_/g, " ");
+                document.getElementById("trackingOrderId").textContent = order.order_number;
+                document.querySelector(".status-badge").textContent =
+                    "Status: " + status.replace(/_/g, " ");
+                document.querySelector(".delivery-time h2").textContent =
+                    order.estimated_preparation_time + " min";
+                document.querySelector(".delivery-time p:last-child").textContent =
+                    "Estimated preparation time";
+
+                const timeline = document.querySelector(".timeline");
+                timeline.innerHTML = "";
+                labels.forEach((label, index) => {
+                    const item = document.createElement("div");
+                    item.className = "timeline-item";
+                    if (stage !== undefined && index < stage) item.classList.add("completed");
+                    else if (stage === index) item.classList.add("active");
+                    if (status === "cancelled") item.classList.remove("active", "completed");
+                    const icon = document.createElement("div");
+                    icon.className = "timeline-icon";
+                    icon.textContent = index < 2 ? "✓" : index === 2 ? "🍳" : index === 3 ? "🛵" : "🏠";
+                    const content = document.createElement("div");
+                    content.className = "timeline-content";
+                    const heading = document.createElement("h3");
+                    heading.textContent = label;
+                    const description = document.createElement("p");
+                    description.textContent = index < (stage === undefined ? 0 : stage)
+                        ? "Completed"
+                        : index === stage ? "Current status" : "Not started";
+                    content.append(heading, description);
+                    item.append(icon, content);
+                    timeline.appendChild(item);
+                });
+
+                const restaurantDetails = document.querySelectorAll(".detail-box");
+                restaurantDetails[0].querySelectorAll("p")[0].textContent =
+                    "Restaurant: " + order.restaurant_name;
+                restaurantDetails[0].querySelectorAll("p")[1].textContent =
+                    "Order: " + order.order_number;
+                restaurantDetails[0].querySelectorAll("p")[2].textContent =
+                    "Total: ₹" + Number(order.total_amount).toFixed(2);
+                restaurantDetails[1].querySelectorAll("p")[0].textContent =
+                    "Status: " + status.replace(/_/g, " ");
+                restaurantDetails[1].querySelectorAll("p")[1].textContent =
+                    "Address: " + order.delivery_address;
+                restaurantDetails[1].querySelectorAll("p")[2].textContent =
+                    "Payment status: " + order.payment_status;
+            } catch (error) {
+                card.textContent = "Unable to load order tracking: " + error.message;
+            }
+        })();
+    </script>
+    <script src="../js/auth-nav.js"></script>
+
+</body>
+</html>

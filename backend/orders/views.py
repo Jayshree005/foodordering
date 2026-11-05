@@ -1,5 +1,5 @@
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -11,6 +11,26 @@ from .models import Cart, CartItem, Order, OrderItem
 from .serializers import CartSerializer, OrderSerializer
 from restaurants.models import FoodItem
 
+CUSTOMIZATION_OPTIONS = {
+    'less spicy',
+    'no onion',
+    'extra cheese',
+    'less oil',
+    'no sugar',
+    'extra crispy',
+}
+
+
+def validated_customizations(request):
+    values = request.data.get('customizations', [])
+    if not isinstance(values, list) or any(
+        not isinstance(value, str) or value.strip().lower() not in CUSTOMIZATION_OPTIONS
+        for value in values
+    ):
+        return None
+    return list(dict.fromkeys(value.strip().lower() for value in values))
+
+
 # View Cart API
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -18,9 +38,13 @@ def view_cart(request):
     restaurant_id = request.query_params.get('restaurant_id')
 
     if not restaurant_id:
+        carts = Cart.objects.filter(
+            customer=request.user,
+            items__isnull=False
+        ).prefetch_related('items__food_item').distinct()
         return Response(
-            {'error': 'Please provide restaurant_id.'},
-            status=status.HTTP_400_BAD_REQUEST
+            {'carts': CartSerializer(carts, many=True).data},
+            status=status.HTTP_200_OK
         )
 
     try:
@@ -55,6 +79,13 @@ def add_to_cart(request):
             status=status.HTTP_400_BAD_REQUEST
         )
 
+    customizations = validated_customizations(request)
+    if customizations is None:
+        return Response(
+            {'error': 'Choose only the supported food customization options.'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
     try:
         food_item = FoodItem.objects.get(
             id=food_item_id,
@@ -74,6 +105,7 @@ def add_to_cart(request):
     cart_item, item_created = CartItem.objects.get_or_create(
         cart=cart,
         food_item=food_item,
+        customizations=customizations,
         defaults={'quantity': quantity}
     )
 
@@ -233,7 +265,7 @@ def place_order(request):
                     food.preparation_time
                 )
 
-            delivery_charge = Decimal('0.00')
+            delivery_charge = Decimal('40.00')
             total_amount = subtotal + delivery_charge
 
             order = Order.objects.create(
@@ -255,7 +287,8 @@ def place_order(request):
                     food_item=food,
                     quantity=item.quantity,
                     price=food.price,
-                    subtotal=food.price * item.quantity
+                    subtotal=food.price * item.quantity,
+                    customizations=item.customizations,
                 )
 
             cart.items.all().delete()
@@ -294,6 +327,20 @@ def my_orders(request):
             'total_orders': orders.count(),
             'orders': serializer.data
         },
+        status=status.HTTP_200_OK
+    )
+
+
+@api_view(['GET'])
+@permission_classes([IsAdminUser])
+def admin_orders(request):
+    orders = Order.objects.select_related(
+        'restaurant', 'customer'
+    ).prefetch_related(
+        'items__food_item'
+    ).order_by('-created_at')
+    return Response(
+        {'total_orders': orders.count(), 'orders': OrderSerializer(orders, many=True).data},
         status=status.HTTP_200_OK
     )
     
@@ -397,13 +444,18 @@ def cancel_order(request, order_id):
 @permission_classes([IsAuthenticated])
 def update_order_status(request, order_id):
 
+    if not request.user.is_staff:
+        owner_filter = {'restaurant__owner': request.user}
+    else:
+        owner_filter = {}
+
     try:
         order = Order.objects.select_related(
             'restaurant',
             'restaurant__owner'
         ).get(
             id=order_id,
-            restaurant__owner=request.user
+            **owner_filter
         )
 
     except Order.DoesNotExist:

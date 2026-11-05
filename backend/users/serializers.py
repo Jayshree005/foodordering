@@ -4,7 +4,14 @@ from django.core.exceptions import ValidationError as DjangoValidationError
 from django.contrib.auth.password_validation import validate_password as django_validate_password
 from rest_framework import serializers
 
-from .models import User
+from .models import ContactMessage, User
+
+
+class ContactMessageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ContactMessage
+        fields = ['id', 'name', 'email', 'subject', 'message', 'created_at']
+        read_only_fields = ['id', 'created_at']
 
 
 class SignupSerializer(serializers.ModelSerializer):
@@ -20,6 +27,8 @@ class SignupSerializer(serializers.ModelSerializer):
             'last_name',
             'email',
             'phone_number',
+            'delivery_address',
+            'postal_code',
             'user_type',
             'preferred_language',
             'password',
@@ -64,3 +73,34 @@ class SignupSerializer(serializers.ModelSerializer):
         user.save()
 
         return user
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    dietary_preferences = serializers.ListField(
+        child=serializers.CharField(max_length=40),
+        required=False,
+    )
+    allergies = serializers.ListField(
+        child=serializers.CharField(max_length=60),
+        required=False,
+    )
+
+    class Meta:
+        model = User
+        fields = [
+            'id',
+            'username',
+            'first_name',
+            'last_name',
+            'email',
+            'phone_number',
+            'is_staff',
+            'delivery_address',
+            'postal_code',
+            'user_type',
+            'preferred_language',
+            'dietary_preferences',
+            'allergies',
+            'tourist_city'
+        ]
+        read_only_fields = ['id', 'username', 'email', 'user_type', 'is_staff']

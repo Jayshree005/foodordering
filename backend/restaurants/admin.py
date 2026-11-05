@@ -43,6 +43,9 @@ class FoodItemAdmin(admin.ModelAdmin):
         'preparation_time',
         'is_available',
         'is_vegetarian',
+        'calories',
+        'protein_g',
+        'is_local_specialty',
     )
 
     list_filter = (
@@ -50,6 +53,7 @@ class FoodItemAdmin(admin.ModelAdmin):
         'category',
         'is_available',
         'is_vegetarian',
+        'is_local_specialty',
     )
 
     search_fields = ('name', 'restaurant__name', 'category__name')

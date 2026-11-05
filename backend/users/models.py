@@ -2,6 +2,17 @@ from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.db import models
 
 
+class ContactMessage(models.Model):
+    name = models.CharField(max_length=150)
+    email = models.EmailField()
+    subject = models.CharField(max_length=100)
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.subject} - {self.email}'
+
+
 class User(AbstractUser):
 
     class UserType(models.TextChoices):
@@ -23,6 +34,11 @@ class User(AbstractUser):
     )
 
     phone_number = models.CharField(max_length=20, blank=True)
+    delivery_address = models.TextField(blank=True)
+    postal_code = models.CharField(max_length=12, blank=True)
+    dietary_preferences = models.JSONField(default=list, blank=True)
+    allergies = models.JSONField(default=list, blank=True)
+    tourist_city = models.CharField(max_length=100, blank=True)
 
     preferred_language = models.CharField(
         max_length=5,

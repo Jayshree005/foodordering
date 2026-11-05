@@ -356,6 +356,7 @@ function setTexts(selector, values) {
 
 // APPLY SELECTED LANGUAGE
 function changeLanguage(language) {
+    if (!languageSelect && !mobileLanguageSelect) return;
 
     const t = translations[language] || translations.en;
 
@@ -533,3 +534,510 @@ async function loadRestaurants() {
 }
 
 loadRestaurants();
+
+// ==========================================
+// SMARTDINE - CART + CHECKOUT
+// Added to existing app.js
+// ==========================================
+
+(function () {
+
+    const CART_KEY = "smartdineCart";
+    const DELIVERY_FEE = 40;
+
+
+    // COMMON CART FUNCTIONS
+
+    function getCart() {
+        try {
+            return JSON.parse(localStorage.getItem(CART_KEY)) || [];
+        } catch (error) {
+            console.error("Cart loading error:", error);
+            return [];
+        }
+    }
+
+
+    function saveCart(cart) {
+        localStorage.setItem(CART_KEY, JSON.stringify(cart));
+    }
+
+
+    function getSubtotal(cart) {
+        return cart.reduce((total, item) => {
+            return total +
+                (Number(item.price) || 0) *
+                (Number(item.quantity) || 1);
+        }, 0);
+    }
+
+
+    function formatPrice(amount) {
+        return "₹" + Number(amount || 0).toFixed(2);
+    }
+
+
+    // ==========================================
+    // CART PAGE
+    // ==========================================
+
+    function initializeCart() {
+
+        const cartContainer = document.getElementById("cartContainer");
+
+        if (!cartContainer) return;
+
+        let cart = getCart();
+
+
+        function displayCart() {
+
+            cartContainer.innerHTML = "";
+
+            if (cart.length === 0) {
+
+                cartContainer.innerHTML = `
+                    <div class="empty-cart">
+                        <div class="empty-icon">🛒</div>
+                        <h2>Your Cart is Empty!</h2>
+                        <p>You haven't added any delicious food yet.</p>
+                        <a href="restaurants.html">
+                            Explore Restaurants →
+                        </a>
+                    </div>
+                `;
+
+                return;
+            }
+
+
+            const subtotal = getSubtotal(cart);
+            const total = subtotal + DELIVERY_FEE;
+
+
+            const layout = document.createElement("div");
+            layout.className = "cart-layout";
+
+
+            const itemsSection = document.createElement("div");
+            itemsSection.className = "cart-items";
+
+
+            cart.forEach((item, index) => {
+
+                const card = document.createElement("div");
+                card.className = "cart-item";
+
+
+                const imageArea = document.createElement("div");
+                imageArea.className = "cart-item-image";
+
+
+                if (item.image) {
+
+                    const image = document.createElement("img");
+
+                    image.src = item.image;
+                    image.alt = item.name || "Food item";
+
+                    image.onerror = function () {
+                        this.replaceWith(
+                            document.createTextNode("🍽️")
+                        );
+                    };
+
+                    imageArea.appendChild(image);
+
+                } else {
+
+                    imageArea.textContent = "🍽️";
+
+                }
+
+
+                const details = document.createElement("div");
+                details.className = "cart-item-details";
+
+
+                const name = document.createElement("h3");
+                name.textContent = item.name || "Food Item";
+
+
+                const restaurant = document.createElement("p");
+                restaurant.textContent =
+                    "Restaurant ID: " + (item.restaurant_id || "N/A");
+
+
+                const price = document.createElement("p");
+                price.textContent = formatPrice(
+                    Number(item.price) * Number(item.quantity)
+                );
+
+
+                const quantityControls = document.createElement("div");
+                quantityControls.className = "quantity-control";
+
+
+                const minus = document.createElement("button");
+                minus.textContent = "−";
+
+                minus.addEventListener("click", function () {
+
+                    cart[index].quantity--;
+
+                    if (cart[index].quantity <= 0) {
+                        cart.splice(index, 1);
+                    }
+
+                    saveCart(cart);
+                    displayCart();
+
+                });
+
+
+                const quantity = document.createElement("span");
+                quantity.textContent = item.quantity;
+
+
+                const plus = document.createElement("button");
+                plus.textContent = "+";
+
+                plus.addEventListener("click", function () {
+
+                    cart[index].quantity++;
+
+                    saveCart(cart);
+                    displayCart();
+
+                });
+
+
+                quantityControls.append(minus, quantity, plus);
+
+
+                const remove = document.createElement("button");
+                remove.className = "remove-btn";
+                remove.textContent = "🗑 Remove";
+
+                remove.addEventListener("click", function () {
+
+                    cart.splice(index, 1);
+
+                    saveCart(cart);
+                    displayCart();
+
+                });
+
+
+                details.append(
+                    name,
+                    restaurant,
+                    price,
+                    quantityControls,
+                    remove
+                );
+
+
+                card.append(imageArea, details);
+
+                itemsSection.appendChild(card);
+
+            });
+
+
+            // ORDER SUMMARY
+
+            const summary = document.createElement("div");
+            summary.className = "summary-card";
+
+            summary.innerHTML = `
+                <h2>Order Summary</h2>
+
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <strong>${formatPrice(subtotal)}</strong>
+                </div>
+
+                <div class="summary-row">
+                    <span>Delivery Fee</span>
+                    <strong>${formatPrice(DELIVERY_FEE)}</strong>
+                </div>
+
+                <div class="summary-row summary-total">
+                    <span>Total Amount</span>
+                    <strong>${formatPrice(total)}</strong>
+                </div>
+
+                <button type="button" id="checkoutButton">
+                    Proceed to Checkout →
+                </button>
+
+                <button type="button" id="clearCartButton">
+                    Clear Cart
+                </button>
+            `;
+
+
+            summary.querySelector("#checkoutButton")
+                .addEventListener("click", function () {
+
+                    window.location.href = "checkout.html";
+
+                });
+
+
+            summary.querySelector("#clearCartButton")
+                .addEventListener("click", function () {
+
+                    if (confirm("Are you sure you want to clear your cart?")) {
+
+                        cart = [];
+
+                        saveCart(cart);
+                        displayCart();
+
+                    }
+
+                });
+
+
+            layout.append(itemsSection, summary);
+
+            cartContainer.appendChild(layout);
+
+        }
+
+
+        displayCart();
+
+    }
+
+
+    // ==========================================
+    // CHECKOUT PAGE
+    // ==========================================
+
+    function initializeCheckout() {
+
+        const form = document.getElementById("checkoutForm");
+
+        if (!form) return;
+
+
+        const summaryItems = document.getElementById("summaryItems");
+        const subtotalElement = document.getElementById("subtotal");
+        const deliveryElement = document.getElementById("deliveryFee");
+        const totalElement = document.getElementById("totalAmount");
+        const successNotice = document.getElementById("successNotice");
+
+
+        let cart = getCart();
+
+
+        // DISPLAY ORDER SUMMARY
+
+        function displaySummary() {
+
+            if (!summaryItems) return;
+
+            summaryItems.innerHTML = "";
+
+            const subtotal = getSubtotal(cart);
+            const total = subtotal + DELIVERY_FEE;
+
+
+            cart.forEach(item => {
+
+                const row = document.createElement("div");
+                row.className = "summary-item";
+
+
+                const name = document.createElement("span");
+
+                name.textContent =
+                    (item.name || "Food Item") +
+                    " × " +
+                    item.quantity;
+
+
+                const price = document.createElement("strong");
+
+                price.textContent = formatPrice(
+                    Number(item.price) * Number(item.quantity)
+                );
+
+
+                row.append(name, price);
+
+                summaryItems.appendChild(row);
+
+            });
+
+
+            if (subtotalElement) {
+                subtotalElement.textContent = formatPrice(subtotal);
+            }
+
+            if (deliveryElement) {
+                deliveryElement.textContent = formatPrice(DELIVERY_FEE);
+            }
+
+            if (totalElement) {
+                totalElement.textContent = formatPrice(total);
+            }
+
+        }
+
+
+        // CHECK EMPTY CART
+
+        if (cart.length === 0) {
+
+            form.style.display = "none";
+
+            const checkoutLayout =
+                document.querySelector(".checkout-layout");
+
+            if (checkoutLayout) {
+
+                checkoutLayout.innerHTML = `
+                    <div class="empty-message">
+                        <h2>Your Cart is Empty! 🛒</h2>
+                        <p>Please add food items before checkout.</p>
+                        <a href="restaurants.html">
+                            Explore Restaurants
+                        </a>
+                    </div>
+                `;
+
+            }
+
+            return;
+
+        }
+
+
+        displaySummary();
+
+
+        // CHECKOUT FORM SUBMISSION
+
+        form.addEventListener("submit", function (event) {
+
+            event.preventDefault();
+
+
+            if (!form.reportValidity()) {
+                return;
+            }
+
+
+            cart = getCart();
+
+
+            if (cart.length === 0) {
+
+                alert("Your cart is empty.");
+
+                window.location.href = "cart.html";
+
+                return;
+
+            }
+
+
+            const paymentInput = document.querySelector(
+                'input[name="payment"]:checked'
+            );
+
+
+            const subtotal = getSubtotal(cart);
+
+
+            const checkoutDetails = {
+
+                customer_name:
+                    document.getElementById("fullName").value.trim(),
+
+                phone:
+                    document.getElementById("phone").value.trim(),
+
+                email:
+                    document.getElementById("email").value.trim(),
+
+                address:
+                    document.getElementById("address").value.trim(),
+
+                city:
+                    document.getElementById("city").value.trim(),
+
+                state:
+                    document.getElementById("state").value.trim(),
+
+                pincode:
+                    document.getElementById("pincode").value.trim(),
+
+                landmark:
+                    document.getElementById("landmark").value.trim(),
+
+                payment_method:
+                    paymentInput ? paymentInput.value : "COD",
+
+                items: cart,
+
+                subtotal: subtotal,
+
+                delivery_fee: DELIVERY_FEE,
+
+                total: subtotal + DELIVERY_FEE
+
+            };
+
+
+            // SAVE CHECKOUT INFORMATION
+
+            sessionStorage.setItem(
+                "smartdineCheckout",
+                JSON.stringify(checkoutDetails)
+            );
+
+
+            // SHOW SUCCESS MESSAGE
+
+            if (successNotice) {
+
+                successNotice.style.display = "block";
+
+                successNotice.textContent =
+                    "Delivery details saved successfully! " +
+                    "Your selected payment method is " +
+                    (checkoutDetails.payment_method === "COD"
+                        ? "Cash on Delivery."
+                        : "Online Payment.") +
+                    " Backend order placement will be connected next.";
+
+                successNotice.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center"
+                });
+
+            }
+
+        });
+
+    }
+
+
+    // ==========================================
+    // INITIALIZE CART AND CHECKOUT
+    // ==========================================
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        initializeCart();
+
+        initializeCheckout();
+
+    });
+
+})();

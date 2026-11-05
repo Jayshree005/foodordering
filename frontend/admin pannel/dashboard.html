@@ -1,0 +1,280 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SmartDine AI | Admin Dashboard</title>
+
+    <!-- ADMIN DASHBOARD CSS -->
+    <link rel="stylesheet" href="../../css/admin-dashboard.css">
+
+</head>
+
+<body>
+
+    <div class="admin-layout">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar" id="adminSidebar">
+
+            <div class="logo">
+
+                <img
+                    src="../../assets/images/WhatsApp Image 2026-11-04 at 8.51.29 PM (1).jpeg"
+                    alt="SmartDine Logo">
+
+                <h2>SmartDine AI</h2>
+
+            </div>
+
+            <p class="admin-label">ADMIN MENU</p>
+
+            <a href="dashboard.html" class="active">
+                📊 Dashboard
+            </a>
+
+            <a href="restaurants-management.html">
+                🍽️ Restaurants
+            </a>
+
+            <a href="users-management.html">
+                👥 Users
+            </a>
+
+            <a href="orders-management.html">
+                📦 Orders
+            </a>
+
+            <a href="analytics.html">
+                📈 Analytics
+            </a>
+
+            <a href="../index.html" class="logout">
+                ↩ Back to Website
+            </a>
+
+        </aside>
+
+
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+
+            <!-- TOPBAR -->
+            <header class="topbar">
+
+                <div style="display:flex; align-items:center; gap:15px;">
+
+                    <button class="menu-toggle" id="menuToggle" type="button">
+                        ☰
+                    </button>
+
+                    <div>
+                        <h1>Admin Dashboard</h1>
+
+                        <p>
+                            Welcome back! Here's your platform overview.
+                        </p>
+                    </div>
+
+                </div>
+
+                <div class="admin-profile">
+
+                    <div class="admin-avatar">
+                        A
+                    </div>
+
+                    <div>
+                        <strong>Admin</strong>
+                        <br>
+                        <small>Administrator</small>
+                    </div>
+
+                </div>
+
+            </header>
+
+
+            <!-- PLATFORM OVERVIEW -->
+            <h2 class="section-title">
+                Platform Overview
+            </h2>
+
+            <section class="stats-grid">
+
+                <!-- TOTAL RESTAURANTS -->
+                <div class="stat-card">
+
+                    <div class="stat-icon">🍽️</div>
+
+                    <p>Total Restaurants</p>
+
+                    <h2 data-admin-stat="total_restaurants">—</h2>
+
+                    <div class="stat-change">
+                        Current platform count
+                    </div>
+
+                </div>
+
+
+                <!-- TOTAL CUSTOMERS -->
+                <div class="stat-card">
+
+                    <div class="stat-icon">👥</div>
+
+                    <p>Total Customers</p>
+
+                    <h2 data-admin-stat="total_users">—</h2>
+
+                    <div class="stat-change">
+                        Current platform count
+                    </div>
+
+                </div>
+
+
+                <!-- TOTAL ORDERS -->
+                <div class="stat-card">
+
+                    <div class="stat-icon">📦</div>
+
+                    <p>Total Orders</p>
+
+                    <h2 data-admin-stat="total_orders">—</h2>
+
+                    <div class="stat-change">
+                        Current platform count
+                    </div>
+
+                </div>
+
+
+                <!-- TOTAL REVENUE -->
+                <div class="stat-card">
+
+                    <div class="stat-icon">💰</div>
+
+                    <p>Total Revenue</p>
+
+                    <h2 data-admin-stat="revenue">—</h2>
+
+                    <div class="stat-change">
+                        Excluding cancelled orders
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- RECENT ORDERS -->
+            <section class="orders-section">
+
+                <div class="orders-header">
+
+                    <h2 class="section-title" style="margin-bottom:0;">
+                        Recent Orders
+                    </h2>
+
+                    <a href="orders-management.html">
+                        View All →
+                    </a>
+
+                </div>
+
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Customer</th>
+                            <th>Restaurant</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="recentOrders"></tbody>
+
+                </table>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <!-- MOBILE SIDEBAR JAVASCRIPT -->
+    <script>
+
+        const menuToggle = document.getElementById("menuToggle");
+
+        const adminSidebar = document.getElementById("adminSidebar");
+
+        if (menuToggle && adminSidebar) {
+
+            menuToggle.addEventListener("click", function () {
+
+                adminSidebar.classList.toggle("show");
+
+            });
+
+        }
+
+    </script>
+    <script src="../../js/admin-api.js"></script>
+    <script>
+        (async function () {
+            if (!await SmartDineAdminAPI.requireAdmin()) return;
+            try {
+                const data = await SmartDineAdminAPI.request("/users/admin/overview/");
+                document.querySelectorAll("[data-admin-stat]").forEach(element => {
+                    const key = element.dataset.adminStat;
+                    element.textContent = key === "revenue"
+                        ? "₹" + Number(data[key]).toLocaleString("en-IN")
+                        : Number(data[key] || 0).toLocaleString("en-IN");
+                });
+                const body = document.getElementById("recentOrders");
+                body.innerHTML = "";
+                (data.recent_orders || []).forEach(order => {
+                    const row = document.createElement("tr");
+                    [
+                        order.order_number,
+                        order.customer_name,
+                        order.restaurant_name,
+                        "₹" + Number(order.total_amount).toFixed(2),
+                        order.status.replace(/_/g, " ")
+                    ].forEach(value => {
+                        const cell = document.createElement("td");
+                        cell.textContent = value;
+                        row.appendChild(cell);
+                    });
+                    body.appendChild(row);
+                });
+                if (!body.children.length) {
+                    const row = document.createElement("tr");
+                    const cell = document.createElement("td");
+                    cell.colSpan = 5;
+                    cell.textContent = "No orders yet.";
+                    row.appendChild(cell);
+                    body.appendChild(row);
+                }
+            } catch (error) {
+                document.querySelector(".main-content").textContent =
+                    "Unable to load dashboard: " + error.message;
+            }
+        })();
+    </script>
+
+</body>
+
+</html>

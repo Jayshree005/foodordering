@@ -1,10 +1,12 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up | Food Paradise</title>
+
     <link rel="stylesheet" href="../css/style.css">
 
     <style>
@@ -92,6 +94,7 @@
             margin-top: 10px;
             font-size: 13px;
             text-align: center;
+            overflow-wrap: anywhere;
         }
 
         .auth-button {
@@ -105,6 +108,11 @@
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
+        }
+
+        .auth-button:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
         }
 
         .auth-bottom {
@@ -128,160 +136,310 @@
 
 <body>
 
-<div class="auth-wrapper">
-    <div class="auth-card">
+    <div class="auth-wrapper">
+        <div class="auth-card">
 
-        <h1>Create Account</h1>
-        <p class="auth-subtitle">Join us and discover amazing food!</p>
+            <h1>Create Account</h1>
+            <p class="auth-subtitle">Join us and discover amazing food!</p>
 
-        <form id="signupForm">
+            <form id="signupForm">
 
-            <label for="username">Username</label>
-            <input type="text" id="username" placeholder="Enter username" required>
+                <label for="username">Username</label>
+                <input type="text" id="username"
+                    placeholder="Enter username" required>
 
-            <label for="fullName">Full Name</label>
-            <input type="text" id="fullName" placeholder="Enter your full name" required>
+                <label for="fullName">Full Name</label>
+                <input type="text" id="fullName"
+                    placeholder="Enter your full name" required>
 
-            <label for="email">Email Address</label>
-            <input type="email" id="email" placeholder="Enter your email" required>
+                <label for="email">Email Address</label>
+                <input type="email" id="email"
+                    placeholder="Enter your email" required>
 
-            <label for="phone">Phone Number</label>
-            <input type="tel" id="phone" placeholder="Enter phone number">
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone"
+                    placeholder="Enter phone number">
 
-            <label for="userType">Account Type</label>
-            <select id="userType" required>
-                <option value="customer">Customer</option>
-                <option value="restaurant_owner">Restaurant Owner</option>
-            </select>
+                <label for="userType">Account Type</label>
+                <select id="userType" required>
+                    <option value="customer">Customer</option>
+                    <option value="restaurant_owner">Restaurant Owner</option>
+                </select>
 
-            <label for="language">Preferred Language</label>
-            <select id="language">
-                <option value="en">English</option>
-                <option value="hi">Hindi</option>
-                <option value="fr">French</option>
-                <option value="es">Spanish</option>
-                <option value="de">German</option>
-                <option value="ja">Japanese</option>
-            </select>
+                <label for="language">Preferred Language</label>
+                <select id="language">
+                    <option value="en">English</option>
+                    <option value="hi">Hindi</option>
+                    <option value="fr">French</option>
+                    <option value="es">Spanish</option>
+                    <option value="de">German</option>
+                    <option value="ja">Japanese</option>
+                </select>
 
-            <label for="password">Create Password</label>
-            <input type="password" id="password"
-                   placeholder="Create a strong password" required>
+                <label for="password">Create Password</label>
+                <input type="password" id="password"
+                    placeholder="Create a strong password" required>
 
-            <div class="password-rules">
-                <div id="lengthRule" class="rule invalid">
-                    ✖ Minimum 8 characters
+                <div class="password-rules">
+
+                    <div id="lengthRule" class="rule invalid">
+                        ✖ Minimum 8 characters
+                    </div>
+
+                    <div id="specialRule" class="rule invalid">
+                        ✖ At least 1 special character
+                    </div>
+
                 </div>
 
-                <div id="specialRule" class="rule invalid">
-                    ✖ At least 1 special character
-                </div>
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" id="confirmPassword"
+                    placeholder="Confirm your password" required>
+
+                <p id="authMessage" class="auth-message"></p>
+
+                <button type="submit" class="auth-button">
+                    Create Account
+                </button>
+
+            </form>
+
+            <div class="auth-bottom">
+                Already have an account?
+                <a href="login.html">Login</a>
+
+                <br><br>
+
+                <a href="index.html">← Back to Home</a>
             </div>
 
-            <label for="confirmPassword">Confirm Password</label>
-            <input type="password" id="confirmPassword"
-                   placeholder="Confirm your password" required>
-
-            <p id="authMessage" class="auth-message"></p>
-
-            <button type="submit" class="auth-button">
-                Create Account
-            </button>
-
-        </form>
-
-        <div class="auth-bottom">
-            Already have an account?
-            <a href="login.html">Login</a>
-            <br><br>
-            <a href="index.html">← Back to Home</a>
         </div>
-
     </div>
-</div>
 
-<script>
-const password = document.getElementById("password");
-const confirmPassword = document.getElementById("confirmPassword");
-const message = document.getElementById("authMessage");
+    <script src="../js/api.js"></script>
+    <script>
 
-const lengthRule = document.getElementById("lengthRule");
-const specialRule = document.getElementById("specialRule");
+        const password = document.getElementById("password");
+        const confirmPassword = document.getElementById("confirmPassword");
+        const message = document.getElementById("authMessage");
 
-let passwordTouched = false;
-let confirmTouched = false;
+        const lengthRule = document.getElementById("lengthRule");
+        const specialRule = document.getElementById("specialRule");
 
-function validatePassword() {
-    const value = password.value;
+        let passwordTouched = false;
+        let confirmTouched = false;
+        let accountCreated = false;
 
-    const hasLength = value.length >= 8;
-    const hasSpecial = /[^A-Za-z0-9]/.test(value);
+        // Password validation
+        function validatePassword() {
 
-    if (passwordTouched) {
-        lengthRule.style.display = "block";
-        specialRule.style.display = "block";
+            const value = password.value;
 
-        lengthRule.className = hasLength ? "rule valid" : "rule invalid";
-        lengthRule.textContent = (hasLength ? "✔ " : "✖ ") +
-            "Minimum 8 characters";
+            const hasLength = value.length >= 8;
+            const hasSpecial = /[^A-Za-z0-9]/.test(value);
 
-        specialRule.className = hasSpecial ? "rule valid" : "rule invalid";
-        specialRule.textContent = (hasSpecial ? "✔ " : "✖ ") +
-            "At least 1 special character";
-    }
+            if (passwordTouched) {
 
-    return hasLength && hasSpecial;
-}
+                lengthRule.style.display = "block";
+                specialRule.style.display = "block";
 
-function validateConfirmPassword() {
-    if (!confirmTouched || confirmPassword.value === "") {
-        message.textContent = "";
-        return false;
-    }
+                lengthRule.className = hasLength
+                    ? "rule valid"
+                    : "rule invalid";
 
-    if (password.value !== confirmPassword.value) {
-        message.style.color = "#ff5555";
-        message.textContent = "Passwords do not match!";
-        return false;
-    }
+                lengthRule.textContent =
+                    (hasLength ? "✔ " : "✖ ") +
+                    "Minimum 8 characters";
 
-    message.style.color = "#4ade80";
-    message.textContent = "Passwords match!";
-    return true;
-}
+                specialRule.className = hasSpecial
+                    ? "rule valid"
+                    : "rule invalid";
 
-password.addEventListener("input", function() {
-    passwordTouched = true;
-    validatePassword();
-    validateConfirmPassword();
-});
+                specialRule.textContent =
+                    (hasSpecial ? "✔ " : "✖ ") +
+                    "At least 1 special character";
+            }
 
-confirmPassword.addEventListener("input", function() {
-    confirmTouched = true;
-    validateConfirmPassword();
-});
-
-document.getElementById("signupForm").addEventListener("submit", function(e) {
-    e.preventDefault();
-
-    passwordTouched = true;
-    confirmTouched = true;
-
-    const validPassword = validatePassword();
-    const validConfirm = validateConfirmPassword();
-
-    if (!validPassword || !validConfirm) {
-        if (!validPassword) {
-            message.style.color = "#ff5555";
-            message.textContent = "Please enter a valid password!";
+            return hasLength && hasSpecial;
         }
-        return;
-    }
 
-    message.style.color = "#4ade80";
-    message.textContent = "Password is valid! Ready for signup.";
-});
-</script>
+        // Confirm password validation
+        function validateConfirmPassword() {
+
+            if (!confirmTouched || confirmPassword.value === "") {
+                message.textContent = "";
+                return false;
+            }
+
+            if (password.value !== confirmPassword.value) {
+
+                message.style.color = "#ff5555";
+                message.textContent = "Passwords do not match!";
+
+                return false;
+            }
+
+            message.style.color = "#4ade80";
+            message.textContent = "Passwords match!";
+
+            return true;
+        }
+
+        password.addEventListener("input", function () {
+
+            passwordTouched = true;
+
+            validatePassword();
+            validateConfirmPassword();
+
+        });
+
+        confirmPassword.addEventListener("input", function () {
+
+            confirmTouched = true;
+
+            validateConfirmPassword();
+
+        });
+
+        // Connect Signup Form with Django Backend
+        document.getElementById("signupForm").addEventListener("submit", async function (e) {
+
+            e.preventDefault();
+
+            passwordTouched = true;
+            confirmTouched = true;
+
+            const validPassword = validatePassword();
+            const validConfirm = validateConfirmPassword();
+
+            if (!validPassword || !validConfirm) {
+
+                if (!validPassword) {
+                    message.style.color = "#ff5555";
+                    message.textContent = "Please enter a valid password!";
+                }
+
+                return;
+            }
+
+            // Split full name into first and last name
+            const fullName = document.getElementById("fullName").value.trim();
+            const nameParts = fullName.split(/\s+/);
+
+            const firstName = nameParts[0];
+            const lastName = nameParts.slice(1).join(" ");
+
+            // Signup data
+            const signupData = {
+
+                username: document.getElementById("username").value.trim(),
+
+                first_name: firstName,
+                last_name: lastName,
+
+                email: document.getElementById("email").value.trim(),
+
+                phone_number: document.getElementById("phone").value.trim(),
+
+                user_type: document.getElementById("userType").value,
+
+                preferred_language: document.getElementById("language").value,
+
+                password: password.value,
+
+                confirm_password: confirmPassword.value
+
+            };
+
+            const button = document.querySelector(".auth-button");
+
+            button.disabled = true;
+            button.textContent = "Creating Account...";
+
+            message.style.color = "#ffb347";
+            message.textContent = "Connecting to server...";
+
+            try {
+
+                const response = await fetch(
+                    "http://127.0.0.1:8000/api/users/signup/",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+
+                        body: JSON.stringify(signupData)
+                    }
+                );
+
+                const data = await response.json();
+
+                if (!response.ok) {
+
+                    const errors = Object.entries(data)
+                        .map(([field, error]) => {
+
+                            return field + ": " +
+                                (Array.isArray(error)
+                                    ? error.join(", ")
+                                    : typeof error === "object"
+                                        ? JSON.stringify(error)
+                                        : error);
+
+                        })
+                        .join(" | ");
+
+                    throw new Error(errors || "Signup failed.");
+
+                }
+
+                // Save token and user details
+                localStorage.setItem("smartdineToken", data.token);
+
+                localStorage.setItem(
+                    "smartdineUser",
+                    JSON.stringify(data.user)
+                );
+
+                message.style.color = "#4ade80";
+                accountCreated = true;
+
+                try {
+                    await SmartDineAPI.syncGuestCart();
+                } catch (syncError) {
+                    message.textContent =
+                        "Account created successfully. Your cart could not sync: " +
+                        syncError.message;
+                    button.textContent = "Account Created";
+                    button.disabled = true;
+                    return;
+                }
+
+                message.textContent =
+                    "Account created successfully. You are signed in; select Back to Home to continue.";
+                button.textContent = "Account Created";
+                button.disabled = true;
+
+            } catch (error) {
+
+                message.style.color = "#ff5555";
+                message.textContent = error.message;
+
+            } finally {
+
+                if (!accountCreated) {
+                    button.disabled = false;
+                    button.textContent = "Create Account";
+                }
+
+            }
+
+        });
+
+    </script>
 
 </body>
 </html>
